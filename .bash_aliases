@@ -1,6 +1,6 @@
 # start emacs non-windowed, use the snapshot version instead
-alias emacs='/usr/bin/start-emacs-or-client-if-running'
-alias emacs-new-window='/usr/bin/start-new-window-emacs-unless-running'
+alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
+alias emacs-new-window='~/.emacs.d/start-new-window-emacs-unless-running'
 
 # start vim loading .vimrc within .vim
 alias vim='vim -u ~/.vim/.vimrc'

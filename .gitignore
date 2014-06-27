@@ -1,0 +1,4 @@
+# vim interim files
+*.swp
+# emacs interim files
+*.\~
