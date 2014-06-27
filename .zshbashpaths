@@ -1,5 +1,5 @@
 # set default editor to emacs
-export EDITOR="/usr/bin/start-emacs-or-client-if-running"
+export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 
 # add ghc-mod from cabal
 cabal_bin="/home/danny/.cabal/bin"
