@@ -251,4 +251,4 @@ fi
 source ~/.zsh/.zshbashpaths
 
 # add command recognition i.e. "did you mean <x>?" like in bash
-function command_not_found_handler() { /usr/bin/python /usr/lib/command-not-found -- $1 }
+function command_not_found_handler() { /usr/bin/python ~/.zsh/command-not-found -- $1 }
