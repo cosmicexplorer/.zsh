@@ -83,8 +83,8 @@ fi
 alias apt='sudo aptitude'
 
 # centralize aliases to single file
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ~/.zsh/.bash_aliases ]; then
+    . ~/.zsh/.bash_aliases
 fi
 
 # Don't glob with find or wget
