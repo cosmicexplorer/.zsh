@@ -2,3 +2,5 @@
 *.swp
 # emacs interim files
 *.\~
+# emacs undo tree files
+*undo-tree*

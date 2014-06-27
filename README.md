@@ -1,4 +1,4 @@
-zsh-config
+.zsh
 ==========
 
 personal zsh configuration
