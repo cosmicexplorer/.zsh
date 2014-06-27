@@ -11,4 +11,4 @@ export CLASSPATH=/usr/local/share/java/libsmlj.jar
 
 export PATH="/home/danny/.cask/bin:$PATH"
 
-cat /home/danny/.intro_text
+cat ~/.intro_text

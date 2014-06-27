@@ -243,10 +243,10 @@ fi
 # source /home/danny/google-cloud-sdk/path.zsh.inc
 
 # The next line enables bash completion for gcloud.
-source /home/danny/google-cloud-sdk/completion.zsh.inc
+source ~/google-cloud-sdk/completion.zsh.inc
 
 # add sources for stuff
-source /home/danny/.zsh/.zshbashpaths
+source ~/.zsh/.zshbashpaths
 
 # add command recognition i.e. "did you mean <x>?" like in bash
 function command_not_found_handler() { /usr/bin/python /usr/lib/command-not-found -- $1 }
