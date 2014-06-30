@@ -2,9 +2,6 @@
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
 alias emacs-new-window='~/.emacs.d/start-new-window-emacs-unless-running'
 
-# start vim loading .vimrc within .vim
-alias vim='vim -u ~/.vim/.vimrc'
-
 # close R without prompting to save worksprace
 alias R='R --no-save'
 
