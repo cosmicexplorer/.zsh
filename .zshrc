@@ -237,16 +237,6 @@ if [[ -r $HOME/.zlocal ]]; then
 source $HOME/.zlocal
 fi
 
-# The next line updates PATH for the Google Cloud SDK.
-# commented out because it sends an error message for some reason???
-# whatever the path is still correct
-# source /home/danny/google-cloud-sdk/path.zsh.inc
-
-# The next line enables bash completion for gcloud.
-if [ -d "~/google-cloud-sdk" ] ; then
-source ~/google-cloud-sdk/completion.zsh.inc
-fi
-
 # add sources for stuff
 source ~/.zsh/.zshbashpaths
 
