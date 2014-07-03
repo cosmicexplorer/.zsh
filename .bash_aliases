@@ -1,6 +1,7 @@
 # alias l cause i always mistype it
 alias l='ls'
-
+# because the fact that this alias doesn't already exist is a crime
+alias md='mkdir'
 # start emacs non-windowed, use the snapshot version instead
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
 alias emacs-new-window='~/.emacs.d/start-new-window-emacs-unless-running'
