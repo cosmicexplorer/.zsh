@@ -2,7 +2,7 @@
 alias l='ls'
 # start emacs non-windowed, use the snapshot version instead
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
-alias emacs-new-window='~/.emacs.d/start-new-window-emacs-unless-running'
+alias emacs-new-window='~/.emacs.d/start-new-window-emacs-if-running'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
