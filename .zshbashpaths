@@ -2,13 +2,15 @@
 export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 
 # add ghc-mod from cabal
-cabal_bin="/home/danny/.cabal/bin"
+cabal_bin="~/.cabal/bin"
 export PATH=$PATH:$cabal_bin
 
 # add sbml functionality
 export LD_LIBRARY_PATH=/usr/local/lib
 export CLASSPATH=/usr/local/share/java/libsmlj.jar
 
-export PATH="/home/danny/.cask/bin:$PATH"
+export PATH="~/.cask/bin:$PATH"
 
-cat ~/.intro_text
+export PATH="~/tools/oclint/bin":$PATH
+
+cat ~/.zsh/.intro_text
