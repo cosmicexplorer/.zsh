@@ -13,4 +13,7 @@ export PATH="~/.cask/bin:$PATH"
 
 export PATH="~/tools/oclint/bin":$PATH
 
+# add scripts
+export PATH="$PATH:~/fun-scripts"
+
 cat ~/.zsh/.intro_text
