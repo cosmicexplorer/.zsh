@@ -91,10 +91,6 @@ fi
 for command in find wget; \
     alias $command="noglob $command"
 
-# rvm
-[[ -s $HOME/.rvm/scripts/rvm ]] && source $HOME/.rvm/scripts/rvm
-
-
 ### ls
 
 LSOPTS='-lAvF --si' # long mode, show all, natural sort, type squiggles, friendly sizes

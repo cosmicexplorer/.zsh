@@ -1,19 +1,7 @@
 # set default editor to emacs
 export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 
-# add ghc-mod from cabal
-cabal_bin="~/.cabal/bin"
-export PATH=$PATH:$cabal_bin
-
-# add sbml functionality
-export LD_LIBRARY_PATH=/usr/local/lib
-export CLASSPATH=/usr/local/share/java/libsmlj.jar
-
-export PATH="~/.cask/bin:$PATH"
-
-export PATH="~/tools/oclint/bin":$PATH
-
 # add scripts
-export PATH="$PATH:~/fun-scripts"
+PATH="$PATH:~/fun-scripts"
 
 cat ~/.zsh/.intro_text
