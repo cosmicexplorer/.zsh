@@ -2,6 +2,7 @@
 export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 
 # add scripts
-PATH="$PATH:~/fun-scripts"
+PATH="$PATH:~/snippets/bash"
+PATH="$PATH:~/.cabal/bin"
 
 cat ~/.zsh/.intro_text
