@@ -4,8 +4,7 @@ alias s='ls'
 # start emacs non-windowed, use the snapshot version instead
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
 alias emacs-new-window='~/.emacs.d/start-new-window-emacs-if-running'
-# use vim lol
-alias vi='vim -u ~/.vim/.vimrc'
+# use vim with improvements
 alias vim='vim -u ~/.vim/.vimrc'
 
 # close R without prompting to save worksprace
@@ -32,9 +31,6 @@ alias dartfmt='/usr/bin/dart/dart-sdk/bin/dartfmt'
 
 # cd to usb-connected devices
 alias showusbdir='/usr/bin/showusbdir.sh'
-
-# make qt work please
-alias qmake='/opt/Qt/5.3/gcc_64/bin/qmake'
 
 # make netflix work easier
 alias netflix='netflix-desktop'

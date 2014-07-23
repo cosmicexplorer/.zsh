@@ -5,4 +5,7 @@ export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 PATH="$PATH:~/snippets/bash"
 PATH="$PATH:~/.cabal/bin"
 
+# add qt
+QT_SELECT=5
+
 cat ~/.zsh/.intro_text

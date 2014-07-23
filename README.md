@@ -1,7 +1,7 @@
 .zsh
 ==========
 
-personal zsh configuration
+Personal zsh configuration, heavily sourced from Eevee from [veekun](http://veekun.com).
 
 ### Setup
 zsh requires the .zshrc to be available, so create a .zshrc file in your home with the lines:
