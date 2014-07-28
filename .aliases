@@ -5,7 +5,7 @@ alias s='ls'
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
 alias emacs-new-window='~/.emacs.d/start-new-window-emacs-if-running'
 # use vim with improvements
-alias vim='vim -u ~/.vim/.vimrc'
+alias vim='/usr/bin/vim -u ~/.vim/.vimrc'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
