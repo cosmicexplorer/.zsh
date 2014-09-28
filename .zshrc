@@ -236,5 +236,5 @@ fi
 # add sources for stuff
 source ~/.zsh/.zshbashpaths
 
-# add command recognition i.e. "did you mean <x>?" like in bash
-function command_not_found_handler() { /usr/bin/python ~/.zsh/command-not-found -- $1 }
+# add command recognition i.e. "did you mean <x>?" like in ubuntu bash
+function command_not_found_handler() { ~/.zsh/find_closest_command_not_found.sh $1 }

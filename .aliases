@@ -1,11 +1,14 @@
-# alias l cause i always mistype it
+# alias ls cause i always mistype it
 alias l='ls'
 alias s='ls'
+alias sl='ls'
 # start emacs non-windowed, use the snapshot version instead
 alias emacs='~/.emacs.d/start-emacs-or-client-if-running'
 alias emacs-new-window='~/.emacs.d/start-new-window-emacs-if-running'
+alias ec='emacsclient -n'
 # use vim with improvements
 alias vim='/usr/bin/vim -u ~/.vim/.vimrc'
+alias suvim='sudo /usr/bin/vim -u /home/cosmicexplorer/.vim/.vimrc'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
@@ -36,4 +39,4 @@ alias showusbdir='/usr/bin/showusbdir.sh'
 alias netflix='netflix-desktop'
 
 # sublime, i guess
-alias sublime='/usr/bin/Sublime\ Text\ 2/sublime_text'
+alias sublime='/usr/bin/sublime_text_3/sublime_text'

@@ -1,1 +1,0 @@
-args=( '--targets:arg:' '(--recursive)-R' '(-R)--recursive' '--depth:arg:' '(--quiet)-q' '(-q)--quiet' '*--cl:change list:_svn_changelists' '*--changelist:change list:_svn_changelists' '--username:arg:' '--password:arg:' '--no-auth-cache' '--non-interactive' '--trust-server-cert' '--config-dir:arg:' '--config-option:arg:' )

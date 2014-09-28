@@ -1,1 +1,0 @@
-usage='usage: 1. diff [-c M | -r N[:M]] [TARGET[@REV]...]'

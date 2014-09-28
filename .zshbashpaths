@@ -8,4 +8,7 @@ PATH="$PATH:~/.cabal/bin"
 # add qt
 QT_SELECT=5
 
+# add cmph
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
 cat ~/.zsh/.intro_text
