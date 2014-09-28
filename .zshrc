@@ -237,4 +237,10 @@ fi
 source ~/.zsh/.zshbashpaths
 
 # add command recognition i.e. "did you mean <x>?" like in ubuntu bash
-function command_not_found_handler() { ~/.zsh/find_closest_command_not_found.sh $1 }
+function command_not_found_handler() {
+    if [ "$#" -eq 1 ]; then
+        ~/.zsh/find_closest_command_not_found.sh $1
+    else
+        ~/.zsh/find_closest_command_not_found.sh $1 2
+    fi
+}

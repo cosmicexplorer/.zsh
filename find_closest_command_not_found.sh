@@ -1,12 +1,51 @@
 #!/bin/bash
 # bash required for use of compgen
 
-echo "$(compgen -A function -abck ; cat ~/.zsh/.aliases | grep alias |\
-	grep -v "#" | grep -o " [[:alnum:]]*=" | grep -o "[[:alnum:]]*")" >\
+TRUNCATE_LENGTH=16              # must be multiple of two for pacsearch to
+				# display properly!!!
+
+stop_truncation="false"
+
+if [ "$#" -eq 2 ]; then
+    stop_truncation="true"
+    echo "???"
+fi
+
+is_truncated="false"
+
+echo -e -n "\033[1;33mcommand not found. searching for replacements...\033[1;0m"
+
+echo "$(compgen -A function -abck | grep "[[:alpha:]]" ; \
+	cat ~/.zsh/.aliases | grep alias | \
+	grep -v "#" | grep -o " [[:alnum:]]*=" | grep -o "[[:alnum:]]*")" > \
 	 ~/.zsh/commandNotFoundFile
 
-echo -e -n "\033[1;33mcommand not found. searching for replacement commands..."
+if [ $stop_truncation = "false" ]; then
+    levenshtein_numlines="$(~/.zsh/use_levenshtein_for_command.py $1 | wc -l)"
+    ~/.zsh/use_levenshtein_for_command.py $1 | head -n$TRUNCATE_LENGTH
+    if [ $levenshtein_numlines -gt $TRUNCATE_LENGTH ]; then
+        is_truncated="true"
+        echo -e "\033[1;33mand more...\033[1;0m"
+    fi
+else
+    ~/.zsh/use_levenshtein_for_command.py $1
+fi
 
-~/.zsh/use_levenshtein_for_command.py $1 # assumes $1 is command given
+echo -e "\033[1;35msearching pacman repositories...\033[1;0m"
+
+if [ $stop_truncation = "false" ]; then
+    pacsearch_numlines="$(pacsearch $1 | wc -l)"
+    pacsearch $1 | head -n$TRUNCATE_LENGTH
+    if [ $pacsearch_numlines -gt $TRUNCATE_LENGTH ]; then
+        is_truncated="true"
+        echo -e "\033[1;33mand more...\033[1;0m"
+    fi
+    if [ $is_truncated = "true" ]; then
+        echo -e -n "\033[1;36mmore options are available. "
+        echo -e "run with -a to see all.\033[1;0m"
+    fi
+else
+        pacsearch $1
+fi
 
 rm ~/.zsh/commandNotFoundFile
