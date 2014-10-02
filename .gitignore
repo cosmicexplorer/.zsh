@@ -4,3 +4,5 @@
 *.\~
 # emacs undo tree files
 *undo-tree*
+# cache
+cache/
