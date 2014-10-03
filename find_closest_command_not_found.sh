@@ -8,7 +8,6 @@ stop_truncation="false"
 
 if [ "$#" -eq 2 ]; then
     stop_truncation="true"
-    echo "???"
 fi
 
 is_truncated="false"
