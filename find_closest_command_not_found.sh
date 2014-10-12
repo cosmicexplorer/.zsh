@@ -53,6 +53,10 @@ if [ "$(ip route ls)" != "" ] ; then
         fi
     else
         pacsearch $1
+        pacsearch_numlines="$(pacsearch $1 | wc -l)"
+        if [ $pacsearch_numlines -eq 0 ]; then
+            echo -e "\033[1;31mnone found.\033[1;0m"
+        fi
     fi
 
 fi
