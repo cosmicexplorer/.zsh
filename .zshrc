@@ -34,7 +34,7 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' ignored-patterns '*?.pyc' '__pycache__'
 zstyle ':completion:*:*:rm:*:*' ignored-patterns
 
-zstyle :compinstall filename '/home/eevee/.zshrc'
+zstyle :compinstall filename '~/.zshrc'
 
 # Always do mid-word tab completion
 setopt complete_in_word
@@ -222,21 +222,18 @@ bindkey "\eOA" up-line-or-local-history
 bindkey "\e[B" down-line-or-local-history
 bindkey "\eOB" down-line-or-local-history
 
-# Alt-S inserts sudo at start of line
-insert_sudo () { zle beginning-of-line; zle -U "sudo " }
-zle -N insert-sudo insert_sudo
-bindkey -e '^s' insert-sudo
-
 ### Machine-specific extras
 
 if [[ -r $HOME/.zlocal ]]; then
-source $HOME/.zlocal
+    source $HOME/.zlocal
 fi
 
 # add sources for stuff
 source ~/.zsh/.zshbashpaths
+source ~/.zsh/zsh_added_functions
 
-# add command recognition i.e. "did you mean <x>?" like in ubuntu bash
+# add command recognition i.e. "did you mean <x>?"
+# like in ubuntu's command-not-found module
 function command_not_found_handler() {
     if [ "$2" != "--all" ]; then
         ~/.zsh/find_closest_command_not_found.sh $1

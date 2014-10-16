@@ -1,10 +1,6 @@
 # set default editor to emacs
 export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
 
-# add scripts
-PATH="$PATH:~/snippets/bash"
-PATH="$PATH:~/.cabal/bin"
-
 # add qt
 QT_SELECT=5
 

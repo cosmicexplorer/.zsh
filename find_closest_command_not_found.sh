@@ -12,7 +12,7 @@ fi
 
 is_truncated="false"
 
-echo -e -n "\033[1;32mcommand not found. searching for replacements...\033[1;0m"
+echo -e -n "\033[1;32mcommand $1 not found. searching for replacements...\033[1;0m"
 
 echo "$(compgen -A function -abck | grep "[[:alpha:]]" ; \
 	cat ~/.zsh/.aliases | grep alias | \
