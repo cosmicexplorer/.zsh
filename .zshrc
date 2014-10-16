@@ -1,5 +1,9 @@
 autoload colors; colors
 
+autoload -U compinit promptinit
+compinit
+promptinit
+
 ### Tab completion
 
 # Force a reload of completion system if nothing matched; this fixes installing
@@ -101,7 +105,7 @@ case $(uname -s) in
         ;;
     Linux)
         eval "$(dircolors -b)"
-        LSOPTS="$LSOPTS --color=auto"
+        LSOPTS="$LSOPTS --color=always"
         LLOPTS="$LLOPTS --color=always" # so | less is colored
 
         # Just loaded new ls colors via dircolors, so change completion colors
@@ -222,16 +226,6 @@ bindkey "\eOA" up-line-or-local-history
 bindkey "\e[B" down-line-or-local-history
 bindkey "\eOB" down-line-or-local-history
 
-### Machine-specific extras
-
-if [[ -r $HOME/.zlocal ]]; then
-    source $HOME/.zlocal
-fi
-
-# add sources for stuff
-source ~/.zsh/.zshbashpaths
-source ~/.zsh/zsh_added_functions
-
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
 function command_not_found_handler() {
@@ -241,3 +235,7 @@ function command_not_found_handler() {
         ~/.zsh/find_closest_command_not_found.sh $1 2
     fi
 }
+
+# add sources for stuff
+source ~/.zsh/.zshbashpaths
+

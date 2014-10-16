@@ -6,3 +6,5 @@
 *undo-tree*
 # cache
 cache/
+# generated file
+commandNotFoundFile
