@@ -247,3 +247,10 @@ if [ -e "${HOME}/.emacs.d/start-emacs-or-client-if-running" ]; then
 else
     echo "emacs init script nonexistent!"
 fi
+
+if [ -d "${HOME}/snippets/bash" ]; then
+    export PATH=$PATH:"${HOME}/snippets/bash"
+else
+    echo "snippets/bash path nonexistent!"
+fi
+
