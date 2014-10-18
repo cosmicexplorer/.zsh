@@ -76,7 +76,6 @@ RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
 RPROMPT_time="%{$fg_bold[black]%}%*%{$reset_color%}"
 RPROMPT=$RPROMPT_code$RPROMPT_jobs$RPROMPT_time
 
-
 ### Misc aliases
 
 export PAGER=less

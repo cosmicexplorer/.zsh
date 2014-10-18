@@ -1,5 +1,27 @@
 # set default editor to emacs
-export EDITOR="~/.emacs.d/start-emacs-or-client-if-running"
+if [ -e "${HOME}/.emacs.d/start-emacs-or-client-if-running" ]; then
+    export EDITOR="${HOME}/.emacs.d/start-emacs-or-client-if-running"
+else
+    echo "emacs init script nonexistent!"
+fi
+
+if [ -d "${HOME}/tools/llvm-build/Release+Asserts/bin" ]; then
+    export PATH="${HOME}/tools/llvm-build/Release+Asserts/bin:$PATH"
+else
+    echo "llvm path nonexistent!"
+fi
+
+if [ -d "${HOME}/snippets/bash" ]; then
+    export PATH=$PATH:"${HOME}/snippets/bash"
+else
+    echo "snippets/bash path nonexistent!"
+fi
+
+if [ -d "${HOME}/.gem/ruby/2.1.0/bin" ]; then
+    export PATH=$PATH:"${HOME}/.gem/ruby/2.1.0/bin"
+else
+    echo "ruby gem path nonexistent!"
+fi
 
 # add qt
 QT_SELECT=5
