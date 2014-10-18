@@ -30,6 +30,8 @@ else
     ~/.zsh/use_levenshtein_for_command.py $1
 fi
 
+rm ~/.zsh/commandNotFoundFile
+
 # if internet available
 if [ "$(ip route ls)" != "" ] ; then
 
@@ -61,4 +63,3 @@ if [ "$(ip route ls)" != "" ] ; then
 
 fi
 
-rm ~/.zsh/commandNotFoundFile
