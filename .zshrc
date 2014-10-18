@@ -241,3 +241,9 @@ function command_not_found_handler() {
 # add sources for stuff
 source ~/.zsh/.zshbashpaths
 
+# set default editor to emacs
+if [ -e "${HOME}/.emacs.d/start-emacs-or-client-if-running" ]; then
+    export EDITOR="${HOME}/.emacs.d/start-emacs-or-client-if-running"
+else
+    echo "emacs init script nonexistent!"
+fi
