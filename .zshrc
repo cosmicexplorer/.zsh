@@ -238,6 +238,8 @@ function command_not_found_handler() {
     fi
 }
 
+export PATH="/usr/local/bin":$PATH
+
 # add sources for stuff
 source ~/.zsh/.zshbashpaths
 
