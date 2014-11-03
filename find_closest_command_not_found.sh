@@ -35,22 +35,22 @@ rm ~/.zsh/commandNotFoundFile
 # if internet available
 if [ "$(ip route ls)" != "" ] ; then
 
-    echo -e -n "\033[1;33msearching pacman repositories...\033[1;0m"
+    echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
 
     if [ $stop_truncation = "false" ]; then
-        pacsearch_numlines="$(pacsearch $1 | wc -l)"
+        pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
         if [ $pacsearch_numlines -eq 0 ]; then
             echo -e "\033[1;31mnone found.\033[1;0m"
         else
             echo -n -e "\n"
-            pacsearch $1 | head -n$TRUNCATE_LENGTH
+            yaourt -Ss $1 | head -n$TRUNCATE_LENGTH
             if [ $pacsearch_numlines -gt $TRUNCATE_LENGTH ]; then
                 is_truncated="true"
                 echo -e "\033[1;33mand more...\033[1;0m"
             fi
             if [ $is_truncated = "true" ]; then
                 echo -e -n "\033[1;36mmore options are available. "
-                echo -e "run with -a to see all.\033[1;0m"
+                echo -e "run with -a or --all to see all.\033[1;0m"
             fi
         fi
     else

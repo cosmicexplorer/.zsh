@@ -231,7 +231,7 @@ bindkey "\eOB" down-line-or-local-history
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
 function command_not_found_handler() {
-    if [ "$2" != "--all" ]; then
+    if [ "$2" != "--all" ] || [ "$2" != "-a" ]; then
         ~/.zsh/find_closest_command_not_found.sh $1
     else
         ~/.zsh/find_closest_command_not_found.sh $1 2
@@ -244,11 +244,7 @@ export PATH="/usr/local/bin":$PATH
 source ~/.zsh/.zshbashpaths
 
 # set default editor to emacs
-if [ -e "${HOME}/.emacs.d/start-emacs-or-client-if-running" ]; then
-    export EDITOR="${HOME}/.emacs.d/start-emacs-or-client-if-running"
-else
-    echo "emacs init script nonexistent!"
-fi
+export EDITOR="$HOME/.zsh/start-emacs-or-client-if-running"
 
 if [ -d "${HOME}/snippets/bash" ]; then
     export PATH=$PATH:"${HOME}/snippets/bash"
