@@ -238,6 +238,10 @@ if [ "$(uname -a | grep ARCH)" != "" ]; then
             ~/.zsh/find_closest_command_not_found.sh $1 2
         fi
     }
+elif [ "$(uname -a | grep Ubuntu)" != "" ]; then
+    function command_not_found_handler() {
+        /usr/bin/python ~/.zsh/command-not-found -- $1
+    }
 fi
 
 export PATH="/usr/local/bin":$PATH
