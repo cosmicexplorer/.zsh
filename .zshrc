@@ -244,7 +244,7 @@ export PATH="/usr/local/bin":$PATH
 source ~/.zsh/.zshbashpaths
 
 # set default editor to emacs
-export EDITOR="$HOME/.zsh/start-emacs-or-client-if-running"
+export EDITOR="emacsclient -n"
 
 if [ -d "${HOME}/snippets/bash" ]; then
     export PATH=$PATH:"${HOME}/snippets/bash"
