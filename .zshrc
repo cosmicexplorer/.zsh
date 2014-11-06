@@ -230,13 +230,15 @@ bindkey "\eOB" down-line-or-local-history
 
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
-function command_not_found_handler() {
-    if [ "$2" != "--all" ] || [ "$2" != "-a" ]; then
-        ~/.zsh/find_closest_command_not_found.sh $1
-    else
-        ~/.zsh/find_closest_command_not_found.sh $1 2
-    fi
-}
+if [ "$(uname -a | grep ARCH)" != "" ]; then
+    function command_not_found_handler() {
+        if [ "$2" != "--all" ] || [ "$2" != "-a" ]; then
+            ~/.zsh/find_closest_command_not_found.sh $1
+        else
+            ~/.zsh/find_closest_command_not_found.sh $1 2
+        fi
+    }
+fi
 
 export PATH="/usr/local/bin":$PATH
 
@@ -251,4 +253,3 @@ if [ -d "${HOME}/snippets/bash" ]; then
 else
     echo "snippets/bash path nonexistent!"
 fi
-

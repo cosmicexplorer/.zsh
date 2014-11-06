@@ -43,7 +43,7 @@ if [ "$(ip route ls)" != "" ] ; then
             echo -e "\033[1;31mnone found.\033[1;0m"
         else
             echo -n -e "\n"
-            yaourt -Ss $1 | head -n$TRUNCATE_LENGTH
+            yaourt -Ss --color $1 | head -n$TRUNCATE_LENGTH
             if [ $pacsearch_numlines -gt $TRUNCATE_LENGTH ]; then
                 is_truncated="true"
                 echo -e "\033[1;33mand more...\033[1;0m"
@@ -54,8 +54,8 @@ if [ "$(ip route ls)" != "" ] ; then
             fi
         fi
     else
-        pacsearch $1
-        pacsearch_numlines="$(pacsearch $1 | wc -l)"
+        yaourt -Ss --color $1
+        pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
         if [ $pacsearch_numlines -eq 0 ]; then
             echo -e "\033[1;31mnone found.\033[1;0m"
         fi
