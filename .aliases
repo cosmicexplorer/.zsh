@@ -12,6 +12,8 @@ alias ec='TERM=xterm-256color emacsclient -n'
 alias vim='/usr/bin/vim -u ~/.vim/.vimrc'
 alias suvim='sudo /usr/bin/vim -u ~/.vim/.vimrc'
 
+alias g='grep -rn --color'
+
 # close R without prompting to save worksprace
 alias R='R --no-save'
 
