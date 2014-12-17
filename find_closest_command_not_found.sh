@@ -6,7 +6,8 @@ TRUNCATE_LENGTH=16              # must be multiple of two for pacsearch to
 
 stop_truncation="false"
 
-if [ "$#" -eq 2 ]; then
+if [ "$2" = "-a" ]; then
+    echo "stopping truncation of output"
     stop_truncation="true"
 fi
 
@@ -50,7 +51,7 @@ if [ "$(ip route ls)" != "" ] ; then
             fi
             if [ $is_truncated = "true" ]; then
                 echo -e -n "\033[1;36mmore options are available. "
-                echo -e "run with -a or --all to see all.\033[1;0m"
+                echo -e "run with -a to see all.\033[1;0m"
             fi
         fi
     else

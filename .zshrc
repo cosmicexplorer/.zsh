@@ -232,11 +232,7 @@ bindkey "\eOB" down-line-or-local-history
 # like in ubuntu's command-not-found module
 if [ "$(uname -a | grep ARCH)" != "" ]; then
     function command_not_found_handler() {
-        if [ "$2" != "--all" ] || [ "$2" != "-a" ]; then
-            ~/.zsh/find_closest_command_not_found.sh $1
-        else
-            ~/.zsh/find_closest_command_not_found.sh $1 2
-        fi
+        ~/.zsh/find_closest_command_not_found.sh $@
     }
 elif [ "$(uname -a | grep Ubuntu)" != "" ]; then
     function command_not_found_handler() {
