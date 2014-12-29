@@ -36,7 +36,7 @@ rm ~/.zsh/commandNotFoundFile
 # if internet available
 if [ "$(ip route ls)" != "" ] ; then
 
-    echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
+    echo -e "\033[1;33msearching pacman and AUR...\033[1;0m"
 
     if [ $stop_truncation = "false" ]; then
         pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"

@@ -6,6 +6,7 @@ alias sl='ls'
 alias emacs='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
 alias e='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
 alias enw='TERM=xterm-256color emacsclient -nw -c'
+alias enwg='TERM=xterm-256color emacsclient -c'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
 alias ec='TERM=xterm-256color emacsclient -n'
 # use vim with improvements
