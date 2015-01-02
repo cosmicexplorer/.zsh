@@ -7,7 +7,6 @@ TRUNCATE_LENGTH=16              # must be multiple of two for pacsearch to
 stop_truncation="false"
 
 if [ "$2" = "-a" ]; then
-    echo "stopping truncation of output"
     stop_truncation="true"
 fi
 
