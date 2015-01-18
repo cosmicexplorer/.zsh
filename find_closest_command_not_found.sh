@@ -35,26 +35,34 @@ rm ~/.zsh/commandNotFoundFile
 # if internet available
 if [ "$(ip route ls)" != "" ] ; then
 
-    echo -e "\033[1;33msearching pacman and AUR...\033[1;0m"
+    echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
 
     if [ $stop_truncation = "false" ]; then
-        pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
+        if hash yaourt 2>/dev/null; then
+            pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
+        else
+            pacsearch_numlines="$(pacsearch $1 | wc -l)"
+        fi
         if [ $pacsearch_numlines -eq 0 ]; then
             echo -e "\033[1;31mnone found.\033[1;0m"
         else
             echo -n -e "\n"
-            yaourt -Ss --color $1 | head -n$TRUNCATE_LENGTH
+            if hash yaourt 2>/dev/null; then
+                yaourt -Ss --color $1 | head -n$TRUNCATE_LENGTH
+            else
+                pacsearch $1 | head -n$TRUNCATE_LENGTH
+            fi
             if [ $pacsearch_numlines -gt $TRUNCATE_LENGTH ]; then
                 is_truncated="true"
                 echo -e "\033[1;33mand more...\033[1;0m"
             fi
-            if [ $is_truncated = "true" ]; then
-                echo -e -n "\033[1;36mmore options are available. "
-                echo -e "run with -a to see all.\033[1;0m"
-            fi
         fi
     else
-        yaourt -Ss --color $1
+        if hash yaourt 2>/dev/null; then
+            yaourt -Ss --color $1
+        else
+            pacsearch $1
+        fi
         pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
         if [ $pacsearch_numlines -eq 0 ]; then
             echo -e "\033[1;31mnone found.\033[1;0m"
@@ -63,3 +71,7 @@ if [ "$(ip route ls)" != "" ] ; then
 
 fi
 
+if [ $is_truncated = "true" ]; then
+  echo -e -n "\033[1;36mmore options are available. "
+  echo -e "run with -a to see all.\033[1;0m"
+fi
