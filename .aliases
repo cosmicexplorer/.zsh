@@ -26,3 +26,6 @@ alias sublime='/usr/bin/sublime_text_3/sublime_text'
 
 # clojure
 alias clojure='java -cp ~/tools/clojure-1.6.0/clojure-1.6.0.jar clojure.main'
+
+# sbcl
+alias sbcl='rlwrap sbcl'
