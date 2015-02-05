@@ -29,3 +29,6 @@ alias clojure='java -cp ~/tools/clojure-1.6.0/clojure-1.6.0.jar clojure.main'
 
 # sbcl
 alias sbcl='rlwrap sbcl'
+
+# ipython
+alias ipython_start='nohup ipython notebook --matplotlib inline &'
