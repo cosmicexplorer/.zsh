@@ -7,7 +7,7 @@ import Levenshtein
 
 attemptedCommand = sys.argv[1]
 
-LEVENSHTEIN_CHECK_DIST = 3
+LEVENSHTEIN_CHECK_DIST = 4
 
 filePath = os.path.expanduser("~/.zsh/commandNotFoundFile")
 commandsFoundFile = open(filePath,"r")
