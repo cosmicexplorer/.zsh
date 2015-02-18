@@ -10,22 +10,13 @@ alias enwg='TERM=xterm-256color emacsclient -c'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
 alias ec='TERM=xterm-256color emacsclient -n'
 # use vim with improvements
-alias vim='/usr/bin/vim -u ~/.vim/.vimrc'
-alias suvim='sudo /usr/bin/vim -u ~/.vim/.vimrc'
+alias vim='vim -u ~/.vim/.vimrc'
+alias suvim='sudo vim -u ~/.vim/.vimrc'
 
-alias g='grep -rn --color'
+alias g='grep -rPn --color'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
-
-# cd to usb-connected devices
-alias showusbdir='/usr/bin/showusbdir.sh'
-
-# sublime, i guess
-alias sublime='/usr/bin/sublime_text_3/sublime_text'
-
-# clojure
-alias clojure='java -cp ~/tools/clojure-1.6.0/clojure-1.6.0.jar clojure.main'
 
 # sbcl
 alias sbcl='rlwrap sbcl'

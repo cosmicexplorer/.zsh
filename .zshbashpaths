@@ -1,0 +1,40 @@
+if [ -d "$HOME/tools/llvm/Release/bin" ]; then
+    PATH="$HOME/tools/llvm/Release/bin:$PATH"
+fi
+
+if [ -d "$HOME/tools/llvm/tools/clang/tools/scan-build" ]; then
+    PATH="$PATH:$HOME/tools/llvm/tools/clang/tools/scan-build"
+fi
+
+if [ -d "$HOME/tools/emacs/src" ]; then
+    PATH="$HOME/tools/emacs/src:$PATH"
+fi
+
+if [ -d "/bin/gradle-2.2.1/bin" ]; then
+    PATH="$PATH:/bin/gradle-2.2.1/bin"
+fi
+
+if [ -d "/bin/eclipse" ]; then
+    PATH="$PATH:/bin/eclipse"
+fi
+
+if [ -d "$HOME/Android/Sdk/tools/" ]; then
+    PATH="$PATH:$HOME/Android/Sdk/tools/"
+fi
+
+if [ -d "$HOME/.cabal/bin/" ]; then
+    PATH="$PATH:$HOME/.cabal/bin/"
+fi
+
+if [ -d "$HOME/tools/node/" ]; then
+    PATH="$PATH:$HOME/tools/node/"
+fi
+
+if [ -d "$HOME/tools/node_v10/" ]; then
+    PATH="$PATH:$HOME/tools/node_v10/"
+    alias node_v10='~/tools/node_v10/node'
+fi
+
+if [ -d "/usr/bin/sublime_text_3/" ]; then
+    PATH="$PATH:/usr/bin/sublime_text_3/"
+fi
