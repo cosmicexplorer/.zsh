@@ -26,15 +26,6 @@ if [ -d "$HOME/.cabal/bin/" ]; then
     PATH="$PATH:$HOME/.cabal/bin/"
 fi
 
-if [ -d "$HOME/tools/node/" ]; then
-    PATH="$PATH:$HOME/tools/node/"
-fi
-
-if [ -d "$HOME/tools/node_v10/" ]; then
-    PATH="$PATH:$HOME/tools/node_v10/"
-    alias node_v10='~/tools/node_v10/node'
-fi
-
 if [ -d "/usr/bin/sublime_text_3/" ]; then
     PATH="$PATH:/usr/bin/sublime_text_3/"
 fi
