@@ -59,17 +59,19 @@ if [ "$(ip route ls)" != "" ] ; then
         fi
     else
         if hash yaourt 2>/dev/null; then
-            yaourt -Ss --color $1
-        else
-            pacsearch $1
-        fi
-        if hash yaourt 2>/dev/null; then
-            pacsearch_numlines="$(yaourt -Ss $1 | wc -l)"
+            pacsearch_numlines="$(yaourt -Ss $1 --color | wc -l)"
         else
             pacsearch_numlines="$(pacsearch $1 | wc -l)"
         fi
         if [ $pacsearch_numlines -eq 0 ]; then
             echo -e "\033[1;31mnone found.\033[1;0m"
+        else
+            echo
+            if hash yaourt 2>/dev/null; then
+                yaourt -Ss --color $1
+            else
+                pacsearch $1
+            fi
         fi
     fi
 
