@@ -23,8 +23,11 @@ if (len(usableCommands) != 0):
     for command in usableCommands:
         print(command, "", end="", sep="")
 
+    commandsFoundFile.close()
     sys.exit(0)
 
 else:
     print("\033[1;31mnone found.\033[1;0m")
+    commandsFoundFile.close()
     sys.exit(1)
+
