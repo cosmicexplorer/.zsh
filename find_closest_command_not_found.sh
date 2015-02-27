@@ -35,7 +35,11 @@ rm ~/.zsh/commandNotFoundFile
 # if internet available
 if [ "$(ip route ls)" != "" ] ; then
 
-    echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
+    if hash yaourt 2>/dev/null; then
+        echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
+    else
+        echo -e -n "\033[1;33msearching pacman...\033[1;0m"
+    fi
 
     if [ $stop_truncation = "false" ]; then
         if hash yaourt 2>/dev/null; then
