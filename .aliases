@@ -22,4 +22,4 @@ alias R='R --no-save'
 alias sbcl='rlwrap sbcl'
 
 # ipython
-alias ipython_start='nohup ipython notebook --matplotlib inline &'
+alias ipython_start='nohup ipython notebook &'
