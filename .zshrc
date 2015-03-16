@@ -70,7 +70,7 @@ REPORTTIME=5
 # %(!.☭.⚘)
 
 PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} %{$fg_bold[blue]%}%~%{$reset_color%}
-#X%(!.☭.>) "
+X%(!.☭.>) "
 #☭%(!.☭.>) "
 RPROMPT_code="%(?..\$? %{$fg_no_bold[red]%}%?%{$reset_color%} )"
 RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
