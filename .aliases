@@ -2,6 +2,7 @@
 alias l='ls'
 alias s='ls'
 alias sl='ls'
+
 # start emacs non-windowed, use the snapshot version instead
 alias emacs='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
 alias e='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
@@ -9,16 +10,18 @@ alias enw='TERM=xterm-256color emacsclient -nw -c'
 alias enwg='TERM=xterm-256color emacsclient -c'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
 alias ec='TERM=xterm-256color emacsclient -n'
+
 # use vim with improvements
 alias vim='vim -u ~/.vim/.vimrc'
 alias suvim='sudo vim -u ~/.vim/.vimrc'
 
+# grep is da bomb
 alias g='grep -rPnH --color'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
 
-# sbcl
+# sbcl /needs/ readline
 alias sbcl='rlwrap sbcl'
 
 # ipython
