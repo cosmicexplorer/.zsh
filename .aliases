@@ -4,16 +4,12 @@ alias s='ls'
 alias sl='ls'
 
 # start emacs non-windowed, use the snapshot version instead
-alias emacs='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
-alias e='TERM=xterm-256color emacs -nw -l ~/.emacs.d/.emacs'
+alias emacs='TERM=xterm-256color emacs -nw'
+alias e='TERM=xterm-256color emacs -nw'
 alias enw='TERM=xterm-256color emacsclient -nw -c'
 alias enwg='TERM=xterm-256color nohup emacsclient -c &'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
 alias ec='TERM=xterm-256color emacsclient -n'
-
-# use vim with improvements
-alias vim='vim -u ~/.vim/.vimrc'
-alias suvim='sudo vim -u ~/.vim/.vimrc'
 
 # grep is da bomb
 alias g='grep -rPnH --color'

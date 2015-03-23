@@ -254,3 +254,5 @@ if [ -d "${HOME}/snippets/bash" ]; then
 else
     echo "snippets/bash path nonexistent!"
 fi
+
+source ~/.zsh/.zshenv
