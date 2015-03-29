@@ -12,7 +12,8 @@ alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
 alias ec='TERM=xterm-256color emacsclient -n'
 
 # grep is da bomb
-alias g='grep -rPnH --color'
+alias g='grep -rnPH --color'
+alias find_warnings='g "\"$(coffee ~/.zsh/find_warnings.coffee ./warning_words | xargs ./regex-opt/regex-opt)\""'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'

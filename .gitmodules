@@ -1,0 +1,3 @@
+[submodule "regex-opt"]
+	path = regex-opt
+	url = git://bisqwit.iki.fi/regex-opt.git
