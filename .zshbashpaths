@@ -29,3 +29,20 @@ fi
 if [ -d "/usr/bin/sublime_text_3/" ]; then
     PATH="$PATH:/usr/bin/sublime_text_3/"
 fi
+
+if [ -d "$HOME/.go" ]; then
+    GOPATH=$HOME/.go
+    PATH=$PATH:$HOME/.go/bin
+fi
+
+if [ -d "$HOME/tools/src" ]; then
+    PATH=$HOME/tools/src:$PATH
+fi
+
+if [ -d "$HOME/tools/vim/src" ]; then
+    PATH="$HOME/tools/vim/src:$PATH"
+fi
+
+if [ -d "$HOME/tools/coffeescript/bin" ]; then
+    PATH="$HOME/tools/coffeescript/bin:$PATH"
+fi
