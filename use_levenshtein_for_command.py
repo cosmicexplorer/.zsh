@@ -9,7 +9,8 @@ attemptedCommand = sys.argv[1]
 
 LEVENSHTEIN_CHECK_DIST = 4
 
-filePath = os.path.expanduser("~/.zsh/commandNotFoundFile")
+
+filePath = os.path.dirname(os.path.realpath(__file__)) + "/commandNotFoundFile"
 commandsFoundFile = open(filePath,"r")
 
 usableCommands = []
@@ -30,4 +31,3 @@ else:
     print("\033[1;31mnone found.\033[1;0m")
     commandsFoundFile.close()
     sys.exit(1)
-

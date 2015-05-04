@@ -1,3 +1,6 @@
+# https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
+ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+
 autoload colors; colors
 
 autoload -U compinit promptinit
@@ -28,7 +31,7 @@ zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=** r:|=**'
 
 # Turn on caching, which helps with e.g. apt
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' cache-path "$ZSH_DIR/cache"
 
 # Show titles for completion types and group by type
 zstyle ':completion:*:descriptions' format "$fg_bold[black]» %d$reset_color"
@@ -90,9 +93,7 @@ fi
 alias apt='sudo aptitude'
 
 # centralize aliases to single file
-if [ -f ~/.zsh/.aliases ]; then
-    . ~/.zsh/.aliases
-fi
+. "$ZSH_DIR/aliases"
 
 # Don't glob with find or wget
 for command in find wget; \
@@ -131,7 +132,7 @@ function title {
     # I don't really need to title every single one with the machine name.
     # On the other hand, if I'm not logged in as me (but, e.g., root), I'd
     # certainly like to know that!
-    if [[ $USER != 'eevee' && $USER != 'amunroe' ]]; then
+    if [[ $USER == 'root' ]]; then
 prefix="[$USER] "
     fi
     # Set screen window title
@@ -233,26 +234,30 @@ bindkey "\eOB" down-line-or-local-history
 # like in ubuntu's command-not-found module
 if [ "$(uname -a | grep ARCH)" != "" ]; then
     function command_not_found_handler() {
-        ~/.zsh/find_closest_command_not_found.sh $@
+        "$ZSH_DIR/find_closest_command_not_found.zsh" $@
     }
 elif [ "$(uname -a | grep Ubuntu)" != "" ]; then
     function command_not_found_handler() {
-        /usr/bin/python ~/.zsh/command-not-found -- $1
+        /usr/bin/env python "$ZSH_DIR/command-not-found" -- $1
     }
+else
+  function command_not_found_handler() {
+    "$ZSH_DIR/find_closest_command_nonarch.zsh" $@
+  }
 fi
 
 export PATH="/usr/local/bin":$PATH
 
 # add sources for stuff
-source ~/.zsh/.zshbashpaths
+if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
+  source "$ZSH_DIR/.zshbashpaths"
+fi
 
 # set default editor to emacs
 export EDITOR="emacsclient -n"
 
 if [ -d "${HOME}/snippets/bash" ]; then
     export PATH=$PATH:"${HOME}/snippets/bash"
-else
-    echo "snippets/bash path nonexistent!"
 fi
 
-source ~/.zsh/.zshenv
+source "$ZSH_DIR/.zshenv"

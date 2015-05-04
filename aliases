@@ -1,3 +1,5 @@
+ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+
 # alias ls cause i always mistype it
 alias l='ls'
 alias s='ls'
@@ -13,13 +15,20 @@ alias ec='TERM=xterm-256color emacsclient -n'
 
 # grep is da bomb
 alias g='grep -rnPH --color'
-alias find_warnings='g "(?<!\w)($(coffee ~/.zsh/find_warnings.coffee ~/.zsh/warning_words | xargs ~/.zsh/regex-opt/regex-opt))(?!\w)"'
+alias find_warnings='g "(?<!\w)($(coffee "$ZSH_DIR/find_warnings.coffee" "$ZSH_DIR/warning_words" | xargs "$ZSH_DIR/regex-opt/regex-opt"))(?!\w)"'
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
 
 # sbcl /needs/ readline
-alias sbcl='rlwrap sbcl'
+if hash rlwrap 2>/dev/null; then
+  alias sbcl='rlwrap sbcl'
+else
+  echo "Consider installing rlwrap so sbcl doesn't suck!"
+fi
+
+# arch grub doesn't have this
+alias update-grub='grub-mkconfig -o /boot/grub/grub.cfg'
 
 # ipython
 alias ipython_start='nohup ipython notebook &'

@@ -10,3 +10,5 @@ cache/
 commandNotFoundFile
 # my own personal stuff
 .intro_text
+# used for personal customization
+.zshbashpaths
