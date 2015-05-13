@@ -232,11 +232,11 @@ bindkey "\eOB" down-line-or-local-history
 
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
-if [ "$(uname -a | grep ARCH)" != "" ]; then
+if [ hash pacman 2>/dev/null ]; then
     function command_not_found_handler() {
         "$ZSH_DIR/find_closest_command_not_found.zsh" $@
     }
-elif [ "$(uname -a | grep Ubuntu)" != "" ]; then
+elif [ "$(cat /etc/*-release | grep "NAME=\"Ubuntu\"")" != "" ]; then
     function command_not_found_handler() {
         /usr/bin/env python "$ZSH_DIR/command-not-found" -- $1
     }
@@ -261,3 +261,5 @@ if [ -d "${HOME}/snippets/bash" ]; then
 fi
 
 source "$ZSH_DIR/.zshenv"
+
+[ -s "$HOME/.dnx/dnvm/dnvm.sh" ] && . "/home/cosmicexplorer/.dnx/dnvm/dnvm.sh" # Load dnvm
