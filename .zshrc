@@ -232,7 +232,7 @@ bindkey "\eOB" down-line-or-local-history
 
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
-if [ hash pacman 2>/dev/null ]; then
+if hash pacman 2>/dev/null; then
     function command_not_found_handler() {
         "$ZSH_DIR/find_closest_command_not_found.zsh" $@
     }
