@@ -15,7 +15,7 @@ alias ec='TERM=xterm-256color emacsclient -n'
 alias suvim='sudo vim -u ~/.vimrc'
 
 # grep is da bomb
-alias g='grep -rnPH --color'
+alias g='grep -rnPH --color --binary-files=without-match'
 alias find_warnings='g "(?<!\w)($(coffee "$ZSH_DIR/find_warnings.coffee" "$ZSH_DIR/warning_words" | xargs "$ZSH_DIR/regex-opt/regex-opt"))(?!\w)"'
 
 # close R without prompting to save worksprace

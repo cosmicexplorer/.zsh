@@ -254,7 +254,7 @@ if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
 fi
 
 # set default editor to emacs
-export EDITOR="emacsclient -n"
+export EDITOR="emacsclient"
 
 if [ -d "${HOME}/snippets/bash" ]; then
     export PATH=$PATH:"${HOME}/snippets/bash"
