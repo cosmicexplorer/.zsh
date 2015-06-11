@@ -19,7 +19,7 @@ fi
 is_truncated="false"
 
 echo -e -n \
-"\033[1;32mcommand $1 not found. searching for replacement...\033[1;0m"
+     "\033[1;32mcommand $1 not found. searching for replacement...\033[1;0m"
 
 echo "$(bash -c "compgen -A function -abck" | grep "[[:alpha:]]" ; \
         cat "$ZSH_DIR/aliases" | grep alias | \
@@ -27,14 +27,16 @@ echo "$(bash -c "compgen -A function -abck" | grep "[[:alpha:]]" ; \
      "$ZSH_DIR/commandNotFoundFile"
 
 if [ $stop_truncation = "false" ]; then
-  levenshtein_numlines="$("$ZSH_DIR/use_levenshtein_for_command.py" $1 | wc -l)"
-  "$ZSH_DIR/use_levenshtein_for_command.py" $1 | head -n$TRUNCATE_LENGTH
+  levenshtein_numlines="$("$ZSH_DIR/use_levenshtein_for_command.pl" $1 \
+"$ZSH_DIR/commandNotFoundFile" | wc -l)"
+  "$ZSH_DIR/use_levenshtein_for_command.pl" \
+    "$1" "$ZSH_DIR/commandNotFoundFile" | head -n$TRUNCATE_LENGTH
   if [ $levenshtein_numlines -gt $TRUNCATE_LENGTH ]; then
     is_truncated="true"
     echo -e "\033[1;35mand more...\033[1;0m"
   fi
 else
-  "$ZSH_DIR/use_levenshtein_for_command.py" $1
+  "$ZSH_DIR/use_levenshtein_for_command.pl" "$1" "$ZSH_DIR/commandNotFoundFile"
 fi
 
 rm "$ZSH_DIR/commandNotFoundFile"
