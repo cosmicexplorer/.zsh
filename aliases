@@ -2,11 +2,6 @@
 
 ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
 
-# python sux
-if hash pip 2>/dev/null; then
-  python get-pip.py
-fi
-
 # alias ls cause i always mistype it
 alias l='ls'
 alias s='ls'
