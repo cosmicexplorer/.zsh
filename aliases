@@ -1,13 +1,27 @@
+#;;; -*- mode: sh; sh-shell: zsh -*-
+
 ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+
+# python sux
+if hash pip 2>/dev/null; then
+  python get-pip.py
+fi
 
 # alias ls cause i always mistype it
 alias l='ls'
 alias s='ls'
 alias sl='ls'
 
+# because nobody cares
+alias nohup='nohup >/tmp/nohup.out'
+
 # start emacs non-windowed, use the snapshot version instead
-alias emacs='TERM=xterm-256color emacs -nw'
 alias e='TERM=xterm-256color emacs -nw'
+if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
+  alias emacs='nohup emacs &'
+else
+  alias emacs='TERM=xterm-256color emacs -nw'
+fi
 alias enw='TERM=xterm-256color emacsclient -nw -c'
 alias enwg='TERM=xterm-256color nohup emacsclient -c &'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'

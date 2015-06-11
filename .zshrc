@@ -1,5 +1,7 @@
+#;;; -*- mode: sh; sh-shell: zsh -*-
+
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+ZSH_DIR="${"$(dirname "$(readlink -ne "${(%):-%N}")")":A}"
 
 autoload colors; colors
 
@@ -236,7 +238,8 @@ if hash pacman 2>/dev/null; then
     function command_not_found_handler() {
         "$ZSH_DIR/find_closest_command_not_found.zsh" $@
     }
-elif [ "$(cat /etc/*-release | grep "NAME=\"Ubuntu\"")" != "" ]; then
+elif [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
+                        gawk -F"\t" '{print $2}' | grep "Ubuntu")" != "" ]; then
     function command_not_found_handler() {
         /usr/bin/env python "$ZSH_DIR/command-not-found" -- $1
     }
