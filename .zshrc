@@ -289,3 +289,13 @@ if [ -d "${HOME}/snippets/bash" ]; then
 fi
 
 source "$ZSH_DIR/.zshenv"
+
+# if on cygwin
+if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
+  /cygdrive/c/Windows/System32/cmd.exe /c "echo export PATH='%PATH%'" > .winpath
+  PATH="/bin:/usr/bin"
+  "$ZSH_DIR"/convert_winpath.sh .winpath
+  source .winpath
+  PATH="/bin:/mingw/bin:$PATH"
+  rm .winpath
+fi
