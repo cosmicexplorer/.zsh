@@ -16,6 +16,6 @@ while (<$inhandle>) {
     push @finalList, toTitleCase $_;
   }
 }
-print join("|", @finalList);
+print join("|", map quotemeta, @finalList);
 
 close $inhandle;

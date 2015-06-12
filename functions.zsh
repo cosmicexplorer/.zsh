@@ -47,8 +47,13 @@ function find-warnings {
   # shitty hack to check if grep has -P support (it complains about not having
   # perl support with -P, to stdout for some reason, which is why this works)
   if grep -P "" "" 2>&1 | grep "\\-P" >/dev/null; then
-    g -E "\b($(get-warnings-regex nil)\b"
-  else                          # but if we do, let's optimize
+    # unfortunately, grep extended doesn't have lookahead or lookbehind, and \w
+    # doesn't appear to be working right now (...?), so we also catch the word
+    # characters at the beginning and end of the match. we could fix this with
+    # an additional grep, but that would disable coloration and i prefer grep's
+    # auto coloration, so we'll have to deal with it
+    g -E "(^|[^a-zA-Z])($(get-warnings-regex nil))([^a-zA-Z]|$)"
+  else                          # but if we do have support, let's optimize
     g -P "(?<!\w)($(get-warnings-regex))(?!\w)"
   fi
 }
