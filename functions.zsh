@@ -21,6 +21,7 @@ function find-grep {
   argsWithLast=$(get-last-arg $@)
   findArgs=$(echo $argsWithLast | head -n1)
   grepPattern=$(echo $argsWithLast | tail -n1)
+  # string manipulation is hard
   echo $findArgs | tr ' ' '\n' | while read el; do
     echo $el
   done | xargs find | while read line; do
@@ -30,17 +31,24 @@ function find-grep {
 function grep-with-depth {
   find-grep . -maxdepth "$1" -type f "$2"
 }
-function get_warnings_regex {
+function get-warnings-regex {
   # regex-opt doesn't link correctly on cygwin, and assuming it will necessarily
   # compile and run first time in any environment is probably a poor choice
   # (unless the environment is linux), so this just gives the unoptimized output
   "$ZSH_DIR/find_warnings.pl" "$ZSH_DIR/warning_words" | \
-    if "$ZSH_DIR/regex-opt/regex-opt"; then
+    if [ "$1" = "" ] && "$ZSH_DIR/regex-opt/regex-opt" >/dev/null; then
+      # if an argument is provided, then just give the unoptimized as well
       xargs "$ZSH_DIR/regex-opt/regex-opt"
     else
       cat
     fi
 }
-function find_warnings {
-  g -P "(?<!\w)($(get_warnings_regex))(?!\w)"
+function find-warnings {
+  # shitty hack to check if grep has -P support (it complains about not having
+  # perl support with -P, to stdout for some reason, which is why this works)
+  if grep -P "" "" 2>&1 | grep "\\-P" >/dev/null; then
+    g -E "\b($(get-warnings-regex nil)\b"
+  else                          # but if we do, let's optimize
+    g -P "(?<!\w)($(get-warnings-regex))(?!\w)"
+  fi
 }
