@@ -297,8 +297,12 @@ fi
 prev_dir="$(pwd)"
 if [ ! -f "$ZSH_DIR/regex-opt/regex-opt" ]; then
   cd "$ZSH_DIR"
-  git submodule update --init --recursive
-  cd regex-opt/
-  make
+  if ! (git submodule update --init --recursive && \
+           cd regex-opt && \
+           make); then
+    echo "Something annoying happened with the regex-opt submodule. See if \
+your internet connection is up, then try running \
+'git submodule update --init --recursive', then 'make' to see what's up."
+  fi
 fi
 cd "$prev_dir"

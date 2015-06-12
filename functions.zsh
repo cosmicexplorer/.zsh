@@ -31,8 +31,15 @@ function grep-with-depth {
   find-grep . -maxdepth "$1" -type f "$2"
 }
 function get_warnings_regex {
+  # regex-opt doesn't link correctly on cygwin, and assuming it will necessarily
+  # compile and run first time in any environment is probably a poor choice
+  # (unless the environment is linux), so this just gives the unoptimized output
   "$ZSH_DIR/find_warnings.pl" "$ZSH_DIR/warning_words" | \
-    xargs "$ZSH_DIR/regex-opt/regex-opt"
+    if "$ZSH_DIR/regex-opt/regex-opt"; then
+      xargs "$ZSH_DIR/regex-opt/regex-opt"
+    else
+      cat
+    fi
 }
 function find_warnings {
   g -P "(?<!\w)($(get_warnings_regex))(?!\w)"

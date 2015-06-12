@@ -3,7 +3,6 @@
 sub toTitleCase {
   $_[0] =~ s/(\w)(.+)/uc($1) . lc($2)/re;
 }
-
 open (my $inhandle, "<", $ARGV[0])
   or die "$0: can't open $ARGV[0] for reading: $!";
 
@@ -17,6 +16,6 @@ while (<$inhandle>) {
     push @finalList, toTitleCase $_;
   }
 }
-print ("\"" . join("|", @finalList) . "\"");
+print join("|", @finalList);
 
 close $inhandle;
