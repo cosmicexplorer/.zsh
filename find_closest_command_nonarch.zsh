@@ -3,7 +3,7 @@
 # bash required for compgen (ew)
 if ! hash bash; then
   echo "bash not found on this system...I can't do this" 1>&2
-  exit -1
+  exit 1
 fi
 
 ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
@@ -22,7 +22,7 @@ echo -e -n \
      "\033[1;32mcommand $1 not found. searching for replacement...\033[1;0m"
 
 echo "$(bash -c "compgen -A function -abck" | grep "[[:alpha:]]" ; \
-        cat "$ZSH_DIR/aliases" | grep alias | \
+        cat "$ZSH_DIR/aliases.zsh" | grep alias | \
         grep -v "#" | grep -o " [[:alnum:]]*=" | grep -o "[[:alnum:]]*")" > \
      "$ZSH_DIR/commandNotFoundFile"
 

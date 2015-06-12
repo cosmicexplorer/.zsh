@@ -3,7 +3,7 @@
 # bash required for compgen (ew)
 if ! hash bash; then
   echo "bash not found on this system...I can't do this" 1>&2
-  exit -1
+  exit 1
 fi
 
 ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
@@ -23,8 +23,9 @@ echo -e -n "\033[1;32mcommand $1 not found. \
 searching for replacements...\033[1;0m"
 
 echo "$(bash -c "compgen -A function -abck" | grep "[[:alpha:]]" ; \
-	cat "$ZSH_DIR/aliases" | grep alias | \
-	grep -v "#" | grep -o " [[:alnum:]]*=" | grep -o "[[:alnum:]]*")" > \
+	cat "$ZSH_DIR/aliases.zsh" | grep alias | \
+	grep -v "#" | grep -o "alias [[:alnum:]]+=" | \
+        grep -o "[[:alnum:]]+=" | grep -o "[[:alnum:]]+")" > \
      "$ZSH_DIR/commandNotFoundFile"
 
 if [ $stop_truncation = "false" ]; then
@@ -42,9 +43,10 @@ fi
 
 rm "$ZSH_DIR/commandNotFoundFile"
 
-# if internet available
-if [ "$(ip route ls)" != "" ] ; then
-
+# if internet available, search pacman (only for arch linux)
+if hash pacman 2>/dev/null && \
+    hash ip 2>/dev/null && \
+    [ "$(ip route ls)" != "" ]; then
   if hash yaourt 2>/dev/null; then
     echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
   else
@@ -88,7 +90,6 @@ if [ "$(ip route ls)" != "" ] ; then
       fi
     fi
   fi
-
 fi
 
 if [ $is_truncated = "true" ]; then

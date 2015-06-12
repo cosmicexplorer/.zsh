@@ -99,7 +99,7 @@ fi
 alias apt='sudo aptitude'
 
 # centralize aliases to single file
-. "$ZSH_DIR/aliases"
+source "$ZSH_DIR/aliases.zsh"
 
 # Don't glob with find or wget
 for command in find wget; do
@@ -242,16 +242,16 @@ bindkey "\eOB" down-line-or-local-history
 # like in ubuntu's command-not-found module
 
 has_handler=false
-if hash perl; then
-  if hash pacman 2>/dev/null; then
-    function command_not_found_handler() {
-      "$ZSH_DIR/find_closest_command_not_found.zsh" $@
-    }
-  else
-    function command_not_found_handler() {
-      "$ZSH_DIR/find_closest_command_nonarch.zsh" $@
-    }
-  fi
+if [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
+                        gawk -F"\t" '{print $2}' | grep "Ubuntu")" != "" ]; then
+  function command_not_found_handler() {
+    python "$ZSH_DIR/command-not-found" -- $1
+  }
+  has_handler=true
+elif hash perl; then
+  function command_not_found_handler() {
+    "$ZSH_DIR/find_closest_command_not_found.zsh" $@
+  }
   if ! perl -e "use Text::Levenshtein" 2>/dev/null; then
     if cpan Text::Levenshtein; then
       has_handler=true
@@ -259,13 +259,6 @@ if hash perl; then
   else
     has_handler=true
   fi
-fi
-if [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
-                        gawk -F"\t" '{print $2}' | grep "Ubuntu")" != "" ]; then
-  function command_not_found_handler() {
-    /usr/bin/env python "$ZSH_DIR/command-not-found" -- $1
-  }
-  has_handler=true
 fi
 
 if [ $has_handler = false ]; then
@@ -299,3 +292,13 @@ if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
   PATH="/bin:/mingw/bin:$PATH"
   rm .winpath
 fi
+
+# setup regex-opt
+prev_dir="$(pwd)"
+if [ ! -f "$ZSH_DIR/regex-opt/regex-opt" ]; then
+  cd "$ZSH_DIR"
+  git submodule update --init --recursive
+  cd regex-opt/
+  make
+fi
+cd "$prev_dir"

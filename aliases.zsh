@@ -1,6 +1,6 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
-ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+source "$ZSH_DIR/functions.zsh"
 
 # alias ls cause i always mistype it
 alias l='ls'
@@ -15,17 +15,14 @@ alias e='TERM=xterm-256color emacs -nw'
 if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
   alias emacs='nohup emacs &'
 else
-  alias emacs='TERM=xterm-256color emacs -nw'
+  alias emacs='e'
 fi
-alias enw='TERM=xterm-256color emacsclient -nw -c'
-alias enwg='TERM=xterm-256color nohup emacsclient -c &'
 alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
+alias emacs-new-window-graphical='TERM=xterm-256color nohup emacsclient -c &'
+alias enw='emacs-new-window'
+alias enwg='emacs-new-window-graphical'
 alias ec='TERM=xterm-256color emacsclient -n'
-alias suvim='sudo vim -u ~/.vimrc'
-
-# grep is da bomb
-alias g='grep -rnH --color --binary-files=without-match'
-alias find_warnings='g -P "(?<!\w)($(coffee "$ZSH_DIR/find_warnings.coffee" "$ZSH_DIR/warning_words" | xargs "$ZSH_DIR/regex-opt/regex-opt"))(?!\w)"'
+alias suvim="sudo vim -u $HOME/.vimrc"
 
 # close R without prompting to save worksprace
 alias R='R --no-save'
@@ -33,7 +30,7 @@ alias R='R --no-save'
 # sbcl /needs/ readline
 if hash rlwrap 2>/dev/null; then
   alias sbcl='rlwrap sbcl'
-else
+elif hash sbcl 2>/dev/null; then
   echo "Consider installing rlwrap so sbcl doesn't suck!"
 fi
 

@@ -25,5 +25,6 @@ if (scalar @possibleCommands != 0) {
     print "$_";
   }
 } else {
-  die "\033[1;31mnone found.\033[1;0m";
+  print "\033[1;31mnone found.\033[1;0m";
+  exit 1;
 }
