@@ -51,7 +51,9 @@ function find-warnings {
     # doesn't appear to be working right now (...?), so we also catch the word
     # characters at the beginning and end of the match. we could fix this with
     # an additional grep, but that would disable coloration and i prefer grep's
-    # auto coloration, so we'll have to deal with it
+    # auto coloration, so we'll have to deal with it. your fault for not using a
+    # version of grep with pcre support (although grep -E is likely more
+    # optimized than -P lol)
     g -E "(^|[^a-zA-Z])($(get-warnings-regex nil))([^a-zA-Z]|$)"
   else                          # but if we do have support, let's optimize
     g -P "(?<!\w)($(get-warnings-regex))(?!\w)"
