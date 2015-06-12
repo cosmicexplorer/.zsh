@@ -15,7 +15,7 @@ function grep-default {
   grep -nH --color --binary-files=without-match $@
 }
 function g {
-  grep-default -r $@
+  grep-default -r $@ .
 }
 function find-grep {
   argsWithLast=$(get-last-arg $@)
