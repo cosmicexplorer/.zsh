@@ -1,5 +1,8 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+# needed to bootstrap on windows
+PATH=$PATH:/bin
+
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
 ZSH_DIR="${"$(dirname "$(readlink -ne "${(%):-%N}")")":A}"
 
