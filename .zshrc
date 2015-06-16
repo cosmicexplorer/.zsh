@@ -119,20 +119,13 @@ done
 # long mode, show all, natural sort, type squiggles, friendly sizes
 LSOPTS='-lAvF --si'
 LLOPTS=''
-case $(uname -s) in
-  FreeBSD)
-    LSOPTS="${LSOPTS} -G"
-    ;;
-  Linux)
-    eval "$(dircolors -b)"
-    LSOPTS="$LSOPTS --color=always"
-    LLOPTS="$LLOPTS --color=always" # so | less is colored
+eval "$(dircolors -b)"
+LSOPTS="$LSOPTS --color=always"
+LLOPTS="$LLOPTS --color=always" # so | less is colored
 
-    # Just loaded new ls colors via dircolors, so change completion colors
-    # to match
-    zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-    ;;
-esac
+# Just loaded new ls colors via dircolors, so change completion colors
+# to match
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 alias ls="ls $LSOPTS"
 alias ll="ls $LLOPTS | less -FX"
 
