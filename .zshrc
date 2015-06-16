@@ -101,6 +101,11 @@ if whence ack-grep &> /dev/null; then
 fi
 alias apt='sudo aptitude'
 
+
+winosname="$(uname -a | cut -b-5)"
+iswin="$([ "$winosname" = "MINGW" ] || [ "$winosname" = "CYGWI" ] && \
+    echo true || echo false)"
+export iswin
 # centralize aliases to single file
 source "$ZSH_DIR/aliases.zsh"
 
@@ -287,7 +292,7 @@ fi
 source "$ZSH_DIR/.zshenv"
 
 # if on cygwin
-if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
+if $iswin; then
   /cygdrive/c/Windows/System32/cmd.exe /c "echo export PATH='%PATH%'" > .winpath
   PATH="/bin:/usr/bin"
   "$ZSH_DIR"/convert_winpath.sh .winpath
