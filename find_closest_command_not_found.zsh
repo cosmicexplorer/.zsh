@@ -28,17 +28,21 @@ echo "$(bash -c "compgen -A function -abck" | grep "[[:alpha:]]" ; \
         grep -o "[[:alnum:]]+=" | grep -o "[[:alnum:]]+")" > \
      "$ZSH_DIR/commandNotFoundFile"
 
+noFunctionFound=false
+
 if [ $stop_truncation = "false" ]; then
   levenshtein_lines="$("$ZSH_DIR/use_levenshtein_for_command.pl" $1 \
 "$ZSH_DIR/commandNotFoundFile" | wc -l)"
   "$ZSH_DIR/use_levenshtein_for_command.pl" \
-    "$1" "$ZSH_DIR/commandNotFoundFile" | head -n$TRUNCATE_LENGTH
+    "$1" "$ZSH_DIR/commandNotFoundFile" || noFunctionFound=true \
+      | head -n$TRUNCATE_LENGTH
   if [ $levenshtein_lines -gt $TRUNCATE_LENGTH ]; then
     is_truncated="true"
     echo -e "\033[1;35mand more...\033[1;0m"
   fi
 else
-  "$ZSH_DIR/use_levenshtein_for_command.pl" "$1" "$ZSH_DIR/commandNotFoundFile"
+  "$ZSH_DIR/use_levenshtein_for_command.pl" \
+    "$1" "$ZSH_DIR/commandNotFoundFile" || noFunctionFound=true
 fi
 
 rm "$ZSH_DIR/commandNotFoundFile"
@@ -47,6 +51,9 @@ rm "$ZSH_DIR/commandNotFoundFile"
 if hash pacman 2>/dev/null && \
     hash ip 2>/dev/null && \
     [ "$(ip route ls)" != "" ]; then
+  if [ "$noFunctionFound" = "true" ]; then
+    echo
+  fi
   if hash yaourt 2>/dev/null; then
     echo -e -n "\033[1;33msearching pacman and AUR...\033[1;0m"
   else
