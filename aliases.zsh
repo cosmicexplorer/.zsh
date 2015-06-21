@@ -12,7 +12,7 @@ alias nohup='nohup >/tmp/nohup.out'
 
 # start emacs non-windowed, use the snapshot version instead
 alias e='TERM=xterm-256color emacs -nw'
-if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
+if $iswin; then
   alias emacs='nohup emacs &'
 else
   alias emacs='e'

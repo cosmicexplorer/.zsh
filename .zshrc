@@ -1,5 +1,8 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+# needed to bootstrap on windows
+PATH=$PATH:/bin
+
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
 ZSH_DIR="${"$(dirname "$(readlink -ne "${(%):-%N}")")":A}"
 
@@ -98,6 +101,11 @@ if whence ack-grep &> /dev/null; then
 fi
 alias apt='sudo aptitude'
 
+
+winosname="$(uname -a | cut -b-5)"
+iswin="$([ "$winosname" = "MINGW" ] || [ "$winosname" = "CYGWI" ] && \
+    echo true || echo false)"
+export iswin
 # centralize aliases to single file
 source "$ZSH_DIR/aliases.zsh"
 
@@ -111,20 +119,13 @@ done
 # long mode, show all, natural sort, type squiggles, friendly sizes
 LSOPTS='-lAvF --si'
 LLOPTS=''
-case $(uname -s) in
-  FreeBSD)
-    LSOPTS="${LSOPTS} -G"
-    ;;
-  Linux)
-    eval "$(dircolors -b)"
-    LSOPTS="$LSOPTS --color=always"
-    LLOPTS="$LLOPTS --color=always" # so | less is colored
+eval "$(dircolors -b)"
+LSOPTS="$LSOPTS --color=always"
+LLOPTS="$LLOPTS --color=always" # so | less is colored
 
-    # Just loaded new ls colors via dircolors, so change completion colors
-    # to match
-    zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-    ;;
-esac
+# Just loaded new ls colors via dircolors, so change completion colors
+# to match
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 alias ls="ls $LSOPTS"
 alias ll="ls $LLOPTS | less -FX"
 
@@ -284,7 +285,7 @@ fi
 source "$ZSH_DIR/.zshenv"
 
 # if on cygwin
-if [ "$(uname -a | cut -b-5)" = "MINGW" ]; then
+if $iswin; then
   /cygdrive/c/Windows/System32/cmd.exe /c "echo export PATH='%PATH%'" > .winpath
   PATH="/bin:/usr/bin"
   "$ZSH_DIR"/convert_winpath.sh .winpath
