@@ -13,7 +13,10 @@ alias nohup='nohup >/tmp/nohup.out'
 # start emacs non-windowed, use the snapshot version instead
 alias e='TERM=xterm-256color emacs -nw'
 if $iswin; then
-  alias emacs='nohup emacs &'
+  function run-emacs {
+    nohup emacs ${@} &
+  }
+  alias emacs='run-emacs'
 else
   alias emacs='e'
 fi
