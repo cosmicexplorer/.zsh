@@ -307,3 +307,8 @@ your internet connection is up, then try running \
   fi
 fi
 cd "$prev_dir"
+
+# setup ruby stuff
+if hash gem 2>/dev/null && hash perl 2>/dev/null; then
+  PATH="$PATH:$("$ZSH_DIR/get-ruby-paths.pl")"
+fi
