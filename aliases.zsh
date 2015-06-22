@@ -8,20 +8,15 @@ alias s='ls'
 alias sl='ls'
 
 # because nobody cares
-alias nohup='nohup >/tmp/nohup.out'
+alias nohup='nohup >>/tmp/nohup.out'
 
 # start emacs non-windowed, use the snapshot version instead
-alias e='TERM=xterm-256color emacs -nw'
 if $iswin; then
   alias emacs='nohup emacs &'
 else
-  alias emacs='e'
+  alias emacs='TERM=xterm-256color emacsclient -c -nw -a ""'
 fi
-alias emacs-new-window='TERM=xterm-256color emacsclient -nw -c'
-alias emacs-new-window-graphical='TERM=xterm-256color nohup emacsclient -c &'
-alias enw='emacs-new-window'
-alias enwg='emacs-new-window-graphical'
-alias ec='TERM=xterm-256color emacsclient -n'
+alias ec='emacsclient -n'
 alias suvim="sudo vim -u $HOME/.vimrc"
 
 # close R without prompting to save worksprace
