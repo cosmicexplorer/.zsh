@@ -1,5 +1,3 @@
-#;;; -*- mode: sh; sh-shell: zsh -*-
-
 # needed to bootstrap on windows
 PATH=$PATH:/bin
 
@@ -242,6 +240,8 @@ bindkey "\eOB" down-line-or-local-history
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
 
+source "$ZSH_DIR/paths.zsh"
+
 has_handler=false
 if [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
                         gawk -F"\t" '{print $2}' | grep "Ubuntu")" != "" ]; then
@@ -312,3 +312,6 @@ cd "$prev_dir"
 if hash gem 2>/dev/null && hash perl 2>/dev/null; then
   PATH="$PATH:$("$ZSH_DIR/get-ruby-paths.pl")"
 fi
+
+# lol
+set +o histexpand
