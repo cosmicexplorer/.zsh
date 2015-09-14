@@ -30,3 +30,6 @@ strict
 race
 experimental
 arbitrary
+require
+requires
+required
