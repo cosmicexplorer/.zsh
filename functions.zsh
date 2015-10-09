@@ -44,7 +44,7 @@ function get-warnings-regex {
     fi
 }
 function find-warnings {
-  # shitty hack to check if grep has -P support (it complains about not having
+  # hack to check if grep has -P support (it complains about not having
   # perl support with -P, to stdout for some reason, which is why this works)
   if grep -P "" "" 2>&1 | grep "\\-P" >/dev/null; then
     # unfortunately, grep extended doesn't have lookahead or lookbehind, so we
