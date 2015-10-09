@@ -26,8 +26,13 @@ alias suvim="sudo vim -u $HOME/.vimrc"
 alias R='R --no-save'
 
 # sbcl /needs/ readline
-if hash rlwrap 2>/dev/null && hash sbcl 2>/dev/null; then
-  alias sbcl='rlwrap sbcl'
+if hash rlwrap 2>/dev/null; then
+  if hash sbcl 2>/dev/null; then
+    alias sbcl='rlwrap sbcl'
+  fi
+  if hash ocaml 2>/dev/null; then
+    alias ocaml='rlwrap ocaml'
+  fi
 fi
 
 # arch grub doesn't have this
