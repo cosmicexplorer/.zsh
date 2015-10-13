@@ -315,3 +315,7 @@ fi
 
 # lol
 set +o histexpand
+
+if [ "$TERM" = "xterm" ]; then
+  TERM=xterm-256color
+fi

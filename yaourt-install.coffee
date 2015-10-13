@@ -53,6 +53,7 @@ onData = (line) ->
       when line.match /PKGBUILD/ then 'n\n'
       when line.match /Continue/ then 'y\n'
       when line.match /Proceed/ then 'y\n'
+      when line.match /Restart/ then 'y\n'
       else null
   if prevString? and canWrite and line.match /==>/i
     yaourt.stdin.write prevString for [0..4]
