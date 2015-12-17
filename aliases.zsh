@@ -40,3 +40,7 @@ alias update-grub='grub-mkconfig -o /boot/grub/grub.cfg'
 
 # ipython
 alias ipython_start='nohup ipython notebook &'
+
+if hash yaourt 2>/dev/null; then
+  alias yaourt='yaourt --noconfirm'
+fi

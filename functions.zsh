@@ -58,8 +58,3 @@ function find-warnings {
     g -P "(?<!\w)($(get-warnings-regex))(?!\w)"
   fi
 }
-if hash coffee 2>/dev/null; then
-  function yaourt {
-    "$ZSH_DIR/yaourt-install.coffee" "${@}"
-  }
-fi
