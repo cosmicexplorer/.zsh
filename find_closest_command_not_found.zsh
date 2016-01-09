@@ -45,7 +45,7 @@ else
     "$1" "$ZSH_DIR/commandNotFoundFile" || noFunctionFound=true
 fi
 
-rm "$ZSH_DIR/commandNotFoundFile"
+rm -f "$ZSH_DIR/commandNotFoundFile"
 
 # if internet available, search pacman (only for arch linux)
 if hash pacman 2>/dev/null && \
