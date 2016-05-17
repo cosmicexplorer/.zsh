@@ -2,7 +2,7 @@
 PATH=$PATH:/bin
 
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-ZSH_DIR="${"$(dirname "$(readlink -ne "${(%):-%N}")")":A}"
+ZSH_DIR=~/.zsh
 
 autoload colors; colors
 
@@ -115,11 +115,15 @@ done
 ### ls
 
 # long mode, show all, natural sort, type squiggles, friendly sizes
-LSOPTS='-lAvF --si'
-LLOPTS=''
-eval "$(dircolors -b)"
-LSOPTS="$LSOPTS --color=always"
-LLOPTS="$LLOPTS --color=always" # so | less is colored
+if hash dircolors; then
+  eval "$(dircolors -b)"
+  LSOPTS='-lAvF --si --color=always'
+  LLOPTS='-lAvF --color=always'
+else
+  export CLICOLOR=YES
+  LSOPTS='-lAvF'
+  LLOPTS=''
+fi
 
 # Just loaded new ls colors via dircolors, so change completion colors
 # to match
@@ -249,7 +253,7 @@ if [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
     python "$ZSH_DIR/command-not-found" -- $1
   }
   has_handler=true
-elif hash perl; then
+elif hash perl && [ ! -f "$ZSH_DIR/.NOLEVENSHTEIN" ]; then
   function command_not_found_handler() {
     "$ZSH_DIR/find_closest_command_not_found.zsh" $@
   }
@@ -261,12 +265,6 @@ elif hash perl; then
     has_handler=true
   fi
 fi
-
-if [ $has_handler = false ]; then
-  echo "No command-not-found handler! Consider installing perl and cpan to \
-attain this functionality." 1>&2
-fi
-
 
 export PATH="/usr/local/bin":$PATH
 
@@ -296,7 +294,7 @@ fi
 
 # setup regex-opt
 prev_dir="$(pwd)"
-if [ ! -f "$ZSH_DIR/regex-opt/regex-opt" ]; then
+if [ ! -f "$ZSH_DIR/regex-opt/regex-opt" ] && [ ! -f "$ZSH_DIR/.NOREGOPT" ]; then
   cd "$ZSH_DIR"
   if ! (git submodule update --init --recursive && \
            cd regex-opt && \

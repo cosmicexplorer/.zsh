@@ -12,3 +12,5 @@ commandNotFoundFile
 .intro_text
 # used for personal customization
 .zshbashpaths
+/.NOLEVENSHTEIN
+/.NOREGOPT

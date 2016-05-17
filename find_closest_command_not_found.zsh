@@ -6,7 +6,7 @@ if ! hash bash; then
   exit 1
 fi
 
-ZSH_DIR="${$(dirname "$(readlink -ne "${(%):-%N}")"):A}"
+ZSH_DIR="${$(dirname "$(readlink -n "${(%):-%N}")"):A}"
 
 TRUNCATE_LENGTH=16              # must be multiple of two for pacsearch to
 # display properly!!!

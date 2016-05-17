@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/perl
 
 my $LEVENSHTEIN_CHECK_DIST = 4;
 

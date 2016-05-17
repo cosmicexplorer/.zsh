@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/perl
 
 my @cmd_output = `gem environment`;
 
