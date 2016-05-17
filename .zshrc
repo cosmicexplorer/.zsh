@@ -115,7 +115,7 @@ done
 ### ls
 
 # long mode, show all, natural sort, type squiggles, friendly sizes
-if hash dircolors; then
+if hash dircolors 2>/dev/null; then
   eval "$(dircolors -b)"
   LSOPTS='-lAvF --si --color=always'
   LLOPTS='-lAvF --color=always'
