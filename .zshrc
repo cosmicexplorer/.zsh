@@ -4,6 +4,10 @@ PATH=$PATH:/bin
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
 ZSH_DIR=~/.zsh
 
+if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
+  source "$ZSH_DIR/.zshbashpaths"
+fi
+
 autoload colors; colors
 
 autoload -U compinit promptinit
@@ -99,7 +103,6 @@ if whence ack-grep &> /dev/null; then
 fi
 alias apt='sudo aptitude'
 
-
 winosname="$(uname -a | cut -b-5)"
 iswin="$([ "$winosname" = "MINGW" ] || [ "$winosname" = "CYGWI" ] && \
     echo true || echo false)"
@@ -159,10 +162,6 @@ function title {
   prefix=$HOST
   if [[ $SSH_CONNECTION == '' && $TERM != "screen"* ]]; then
     prefix=''
-  fi
-  # If we're showing host and I'm not under my usual username, prepend it
-  if [[ $prefix != '' && $USER != 'cosmicexplorer' && $USER != 'danny' ]]; then
-    prefix="$USER@$prefix"
   fi
   # Wrap it in brackets
   if [[ $prefix != '' ]]; then
@@ -264,13 +263,6 @@ elif hash perl && [ ! -f "$ZSH_DIR/.NOLEVENSHTEIN" ]; then
   else
     has_handler=true
   fi
-fi
-
-export PATH="/usr/local/bin":$PATH
-
-# add sources for stuff
-if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
-  source "$ZSH_DIR/.zshbashpaths"
 fi
 
 # set default editor to emacs
