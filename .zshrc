@@ -248,8 +248,6 @@ source "$ZSH_DIR/paths.zsh"
 
 source "$ZSH_DIR/find_closest_command_not_found.zsh"
 
-export PATH="/usr/local/bin":$PATH
-
 # add sources for stuff
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
   source "$ZSH_DIR/.zshbashpaths"

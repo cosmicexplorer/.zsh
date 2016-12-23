@@ -1,16 +1,4 @@
-# vim interim files
-*.swp
-# emacs interim files
-*.\~
-# emacs undo tree files
-*undo-tree*
 # cache
 cache/
-# generated file
-commandNotFoundFile
-# my own personal stuff
-.intro_text
 # used for personal customization
 .zshbashpaths
-/.NOLEVENSHTEIN
-/.NOREGOPT

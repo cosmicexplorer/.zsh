@@ -58,3 +58,15 @@ function find-warnings {
     g -P "(?<!\w)($(get-warnings-regex))(?!\w)"
   fi
 }
+
+function add_path_before_if {
+  for arg in $@; do
+    [ -d "$arg" ] && PATH="$arg:$PATH"
+  done
+}
+
+function add_path_if {
+  for arg in $@; do
+    [ -d "$arg" ] && PATH="$PATH:$arg"
+  done
+}

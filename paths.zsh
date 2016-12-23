@@ -1,5 +1,3 @@
-PATH="$PATH:/usr/bin/core_perl:/usr/bin/vendor_perl"
-cabal_bin="$HOME/.cabal/bin"
-if [ -d "$cabal_bin" ]; then
-    PATH="$PATH:$cabal_bin"
-fi
+add_path_if /usr/bin/{core_perl,vendor_perl}
+add_path_if "$HOME/.cabal.bin"
+add_path_before_if /usr/local/bin
