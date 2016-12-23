@@ -4,10 +4,6 @@ PATH=$PATH:/bin
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
 export ZSH_DIR=~/.zsh
 
-if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
-  source "$ZSH_DIR/.zshbashpaths"
-fi
-
 autoload colors; colors
 
 autoload -U compinit promptinit
@@ -241,6 +237,10 @@ bindkey "\e[B" down-line-or-local-history
 bindkey "\eOB" down-line-or-local-history
 
 source "$ZSH_DIR/paths.zsh"
+
+if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
+  source "$ZSH_DIR/.zshbashpaths"
+fi
 
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
