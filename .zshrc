@@ -2,7 +2,7 @@
 PATH=$PATH:/bin
 
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-ZSH_DIR=~/.zsh
+export ZSH_DIR=~/.zsh
 
 autoload colors; colors
 
@@ -241,30 +241,12 @@ bindkey "\eOA" up-line-or-local-history
 bindkey "\e[B" down-line-or-local-history
 bindkey "\eOB" down-line-or-local-history
 
+source "$ZSH_DIR/paths.zsh"
+
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
 
-source "$ZSH_DIR/paths.zsh"
-
-has_handler=false
-if [ "$(hash lsb_release -d 2>/dev/null && lsb_release -d | \
-                        gawk -F"\t" '{print $2}' | grep "Ubuntu")" != "" ]; then
-  function command_not_found_handler() {
-    python "$ZSH_DIR/command-not-found" -- $1
-  }
-  has_handler=true
-elif hash perl && [ ! -f "$ZSH_DIR/.NOLEVENSHTEIN" ]; then
-  function command_not_found_handler() {
-    "$ZSH_DIR/find_closest_command_not_found.zsh" $@
-  }
-  if ! perl -e "use Text::Levenshtein" 2>/dev/null; then
-    if cpan Text::Levenshtein; then
-      has_handler=true
-    fi
-  else
-    has_handler=true
-  fi
-fi
+source "$ZSH_DIR/find_closest_command_not_found.zsh"
 
 export PATH="/usr/local/bin":$PATH
 
@@ -275,12 +257,6 @@ fi
 
 # set default editor to emacs
 export EDITOR="emacsclient"
-
-if [ -d "${HOME}/snippets/bash" ]; then
-  export PATH=$PATH:"${HOME}/snippets/bash"
-fi
-
-source "$ZSH_DIR/.zshenv"
 
 # if on cygwin
 if $iswin; then
@@ -305,11 +281,6 @@ your internet connection is up, then try running \
   fi
 fi
 cd "$prev_dir"
-
-# setup ruby stuff
-if hash gem 2>/dev/null && hash perl 2>/dev/null; then
-  PATH="$PATH:$("$ZSH_DIR/get-ruby-paths.pl")"
-fi
 
 # lol
 set +o histexpand
