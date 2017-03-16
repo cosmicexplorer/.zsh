@@ -36,9 +36,11 @@ function split_args {
 }
 
 default_sep='----\n'
+
 function print_sep {
   echo -n "$default_sep"
 }
+
 function sep {
   $@
   print_sep
@@ -56,6 +58,7 @@ function g {
   grep-default $@
 }
 
+# TODO: make this better
 # function find-grep {
 #   find
 # }
@@ -120,11 +123,6 @@ function bye {
 
 function goodread {
   read -r $@
-}
-
-function g_alias {
-  # res="$1=${@:2}"
-  alias -g "${(q)1}"="${(q)2}"
 }
 
 function vomit {

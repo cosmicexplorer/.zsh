@@ -2,14 +2,13 @@
 
 source "$ZSH_DIR/functions.zsh"
 
-# g_alias ls cause i always mistype it
-g_alias 'l' 'ls'
-g_alias 's' 'ls'
-g_alias 'sl' 'ls'
+alias 'l'='ls'
+alias 's'='ls'
+alias 'sl'='ls'
 
 # because nobody cares
 export nohup_out_f='/tmp/nohup.out'
-g_alias 'nohup' "nohup >>$nohup_out_f"
+alias 'nohup' 'nohup >>$nohup_out_f'
 
 # start emacs non-windowed, use the snapshot version instead
 if "${iswin}"; then
@@ -22,39 +21,57 @@ else
     emacsclient -c -nw -a '' $@
   }
 fi
-g_alias 'emacs' 'run-emacs'
+alias 'emacs'='run-emacs'
 
-function ec {
-  emacsclient -n $@
+alias 'ec'='emacsclient -n'
+
+# function str_to_array {
+# }
+
+# b=("${(f)$(printf '-e\n%s\n' $a)}");
+
+
+# the second argument/return value of this function is the globally exported variable "prepend_to_els"
+export prepend_tmp_arr=()
+function prepend_to_els {
+  pre_str="$1"
+  prepend_tmp_arr=("${(f)$(printf "$pre_str\n%s\n" $prepend_tmp_arr)}")
 }
 
+export emacsclient_eval_arg="-e"
+
 function ece {
-  ec -e "$1"
+  prepend_tmp_arr=("$@")
+  prepend_to_els "$emacsclient_eval_arg"
+  ec "${prepend_tmp_arr}"
 }
 
 # TODO: \t
 
-g_alias 'suvim' "sudo vim -u $HOME/.vimrc"
+alias 'suvim' 'sudo vim -u $HOME/.vimrc'
 
 # close R without prompting to save worksprace
-g_alias 'R' 'R --no-save'
+alias 'R'='R --no-save'
 
 # sbcl /needs/ readline
 if hash rlwrap 2>/dev/null; then
   if hash sbcl 2>/dev/null; then
-    g_alias 'sbcl' 'rlwrap sbcl'
+    alias 'sbcl'='rlwrap sbcl'
   fi
   if hash ocaml 2>/dev/null; then
-    g_alias 'ocaml' 'rlwrap ocaml'
+    alias 'ocaml'='rlwrap ocaml'
   fi
 fi
 
 # arch grub doesn't have this
-g_alias 'update-grub' 'grub-mkconfig -o /boot/grub/grub.cfg'
+alias 'update-grub'='grub-mkconfig -o /boot/grub/grub.cfg'
 
 # ipython
-g_alias "ipython_start" 'nohup ipython notebook &'
+alias 'ipython_start'='nohup ipython notebook &'
 
 if hash yaourt 2>/dev/null; then
-  g_alias 'yaourt' 'yaourt --noconfirm'
+  # function yaourt {
+  #   yaourt --noconfirm $@
+  # }
+  alias 'yaourt'='yaourt --noconfirm'
 fi
