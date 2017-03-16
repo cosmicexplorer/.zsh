@@ -35,15 +35,14 @@ alias 'ec'='emacsclient -n'
 export prepend_tmp_arr=()
 function prepend_to_els {
   pre_str="$1"
-  prepend_tmp_arr=("${(f)$(printf "$pre_str\n%s\n" $prepend_tmp_arr)}")
+  prepend_tmp_arr=("${(f)$(printf "${pre_str}\n%s\n" $prepend_tmp_arr)}")
 }
 
-export emacsclient_eval_arg="-e"
-
+export emacsclient_eval_arg='-e'
 function ece {
   prepend_tmp_arr=("$@")
-  prepend_to_els "$emacsclient_eval_arg"
-  ec "${prepend_tmp_arr}"
+  prepend_to_els "${emacsclient_eval_arg}"
+  ec $prepend_tmp_arr
 }
 
 # TODO: \t
