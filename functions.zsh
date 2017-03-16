@@ -10,13 +10,56 @@ function get-last-arg {
   echo "$(echo $prevArgs | cut -b3-)\n$lastArg"
 }
 
+export default_print_var_val_fmt="'\$%s'=>'%s'\n"
+
+function print_var_with_val {
+  varname="$1"
+  val="$2"
+  fmt="${3:-"$default_print_var_val_fmt"}"
+  printf "$fmt" "${varname}" "${val}"
+}
+
+function var_log {
+  varname="$1"
+  print_var_with_val "$varname" "${(P)varname}"
+}
+
+function show_args {
+  print_var_val '#'
+  for arg; do print_var_val "$arg"; done
+}
+function exp {
+    echo "${(e)${1}}"
+}
+function split_args {
+  "$1" "${=@:2}"
+}
+
+default_sep='----\n'
+function print_sep {
+  echo -n "$default_sep"
+}
+function sep {
+  $@
+  print_sep
+}
+
 # grep is da bomb
+export MY_GREP_OPTS='-nHiP --color=always --binary-files=text'
 function grep-default {
-  grep -nH --color --binary-files=without-match $@
+  grep ${=MY_GREP_OPTS} $@
+}
+function grec {
+  grep-default -R $@ .
 }
 function g {
-  grep-default -r $@ .
+  grep-default $@
 }
+
+# function find-grep {
+#   find
+# }
+
 function find-grep {
   argsWithLast=$(get-last-arg $@)
   findArgs=$(echo $argsWithLast | head -n1)
@@ -69,4 +112,21 @@ function add_path_if {
   for arg in $@; do
     [ -d "$arg" ] && PATH="$PATH:$arg"
   done
+}
+
+function bye {
+  $@ && exit
+}
+
+function goodread {
+  read -r $@
+}
+
+function g_alias {
+  # res="$1=${@:2}"
+  alias -g "${(q)1}"="${(q)2}"
+}
+
+function vomit {
+  zsh -xi -c exit 2>&1
 }
