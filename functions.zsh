@@ -59,7 +59,7 @@ function gc {
 }
 # thorough
 function gt {
-  grep -F --binary-files=text --dereference-recursive --devices=recurse $@ .
+  grep -F --binary-files=text --dereference-recursive --devices=read $@ .
 }
 
 # ps is cool too
