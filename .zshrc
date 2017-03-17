@@ -97,7 +97,9 @@ export LESS="-RMi~Kq"
 if whence ack-grep &> /dev/null; then
   alias ack=ack-grep
 fi
-alias apt='sudo aptitude'
+if hash aptitude 2>/dev/null; then
+  alias apt='sudo aptitude'
+fi
 
 winosname="$(uname -a | cut -b-5)"
 iswin="$([ "$winosname" = "MINGW" ] || [ "$winosname" = "CYGWI" ] && \
@@ -177,6 +179,10 @@ function precmd {
   # Shorten homedir back to '~'
   local shortpwd=${PWD/$HOME/\~}
   title "zsh $shortpwd"
+  local leftlen="${#${(S%%)RPROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}}"
+  rightwidth=$(($COLUMNS-${leftlen}))
+  # echo "rightwidth=$rightwidth"
+  RPROMPT="${(l:$RIGHTWIDTH::.:)RPROMPT}"
 }
 
 function preexec {
@@ -280,8 +286,14 @@ cd "$prev_dir"
 # lol
 set +o histexpand
 
-export emacs_compat_term='ansi'
-
-if ! [[ -v TERM ]] || [[ "$TERM" =~ "dumb|emacs" ]]; then
-  export TERM="${emacs_compat_term}"
+# export emacs_compat_term='ansi'
+# export emacs_compat_term='xterm-256color'
+if ! [[ -v TERM ]]; then
+  echo "no TERM! exiting..."
+  exit 1
+elif [[ "$TERM" =~ "dumb|emacs" ]]; then
+  export TERMINFO=/usr/share/terminfo
+  setopt -o emacs
+  # export TERM="${emacs_compat_term}"
+  # export TERM=emacs
 fi

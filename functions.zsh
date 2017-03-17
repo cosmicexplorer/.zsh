@@ -47,15 +47,79 @@ function sep {
 }
 
 # grep is da bomb
-export MY_GREP_OPTS='-nHiP --color=always --binary-files=text'
-function grep-default {
-  grep ${=MY_GREP_OPTS} $@
-}
-function grec {
-  grep-default -R $@ .
-}
 function g {
-  grep-default $@
+  grep -nHiP --color=always $@
+}
+# recursive
+function gr {
+  g -R $@ .
+}
+function gc {
+  grep -iP --binary-files=without-match --color=never $@
+}
+# thorough
+function gt {
+  grep -F --binary-files=text --dereference-recursive --devices=recurse $@ .
+}
+
+# ps is cool too
+function p {
+  ps aux $@
+}
+function ptree {
+  ps auxf $@
+}
+function po {
+  ps axo $@
+}
+function ps-help {
+  cat 1>&2 <<EOF
+ps [simple-selectors...[=ax]] [list-selectors...] [format...[=u]]
+
+1. simple process selection (e.g. whether on tty)
+'ax' => all (default)
+'T' => all associated with this terminal
+'r' => running processes
+
+2. list process selection
+'p <pidlist>' => only pids in list
+'-C <cmdlist>' => only from commands (executable names) in list
+
+3. output format
+'u' => many columns of data (default)
+'o <format>' => only columns specified in <format>
+
+- <format> is a quoted list of:
+    1. '<col>' => the identifier of some output column
+    2. '<col>=<name>' => the column id and what to rename it to in output
+
+4. output modifiers
+'e' => show environment after command
+'f' => show results in a tree
+'k <[+|-]col,...>' => sort on columns, specifying whether ascending or
+descending
+
+
+5. output columns ('<numeric>=<textual>' are synonyms when listed like that)
+'<>=c' => actual command
+'rss=<>' => resident set size
+'cp=pcpu' => cpu stress
+'<>=args' => argv
+'time=cputime' => cumulative cpu time
+'etimes=etime' => elapsed time since start
+'<>=f' => flags
+'<>=cls' => scheduling class
+'<>=sched' => scheduling policy
+'egid=egroup' => process group id (just one for whole tree)
+'ruid=ruser' => user id
+'<>=stat' => state
+'<>=cstime' => cumulative system time
+'<>=cutime' => cumulative user time
+
+The above is just a summary; check 'man ps' for complete info! Don't use
+a hyphen for args unless specified, not all switches need to you to specify a
+value, all lists are either quoted or separated with commas.
+EOF
 }
 
 # TODO: make this better
@@ -123,6 +187,12 @@ function bye {
 
 function goodread {
   read -r $@
+}
+
+export cond_yes='yup'
+export cond_no='nah'
+function cond {
+  $@ && echo "${cond_yes}" || echo "${cond_no}"
 }
 
 function vomit {

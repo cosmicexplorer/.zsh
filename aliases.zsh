@@ -23,7 +23,10 @@ else
 fi
 alias 'emacs'='run-emacs'
 
-alias 'ec'='emacsclient -n'
+function ec {
+  emacsclient -n $@
+}
+
 
 # function str_to_array {
 # }
