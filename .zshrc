@@ -6,7 +6,7 @@ export ZSH_DIR=~/.zsh
 
 autoload colors; colors
 
-autoload -U compinit promptinit
+autoload -Uz compinit promptinit
 compinit
 promptinit
 
@@ -78,14 +78,15 @@ REPORTTIME=5
 
 # %(!.☭.⚘)
 
-PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
+# export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
+# %{$fg_bold[blue]%}%~%{$reset_color%}${_newline}X> "
+export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
 %{$fg_bold[blue]%}%~%{$reset_color%}
-X%(!.☭.>) "
+X> "
 #☭%(!.☭.>) "
 RPROMPT_code="%(?..\$? %{$fg_no_bold[red]%}%?%{$reset_color%} )"
 RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
 RPROMPT_time="%{$fg_bold[black]%}%*%{$reset_color%}"
-RPROMPT=$RPROMPT_code$RPROMPT_jobs$RPROMPT_time
 
 ### Misc aliases
 
@@ -179,10 +180,16 @@ function precmd {
   # Shorten homedir back to '~'
   local shortpwd=${PWD/$HOME/\~}
   title "zsh $shortpwd"
+  local left_esc="${(S%%)PROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}"
+  # echo "left_esc=$left_esc"
   local leftlen="${#${(S%%)RPROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}}"
-  rightwidth=$(($COLUMNS-${leftlen}))
-  # echo "rightwidth=$rightwidth"
-  RPROMPT="${(l:$RIGHTWIDTH::.:)RPROMPT}"
+  local rightwidth=$(($COLUMNS-${leftlen}))
+  # echo "leftlen=$leftlen,rightwidth=$rightwidth,COLUMNS=$COLUMNS"
+  # RPROMPT_BARE=
+  # RPROMPT="${(l:$rightwidth::.:)RPROMPT_BARE}"
+  # local right_esc="${(S%%)RPROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}"
+  # echo "right_esc=$right_esc"
+  # print -P "${RPROMPT}"
 }
 
 function preexec {
@@ -286,14 +293,12 @@ cd "$prev_dir"
 # lol
 set +o histexpand
 
-# export emacs_compat_term='ansi'
-# export emacs_compat_term='xterm-256color'
+export emacs_compat_term='ansi'
 if ! [[ -v TERM ]]; then
   echo "no TERM! exiting..."
   exit 1
 elif [[ "$TERM" =~ "dumb|emacs" ]]; then
-  export TERMINFO=/usr/share/terminfo
-  setopt -o emacs
-  # export TERM="${emacs_compat_term}"
-  # export TERM=emacs
+  export TERM="${emacs_compat_term}"
+else
+  export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi
