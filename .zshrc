@@ -127,6 +127,9 @@ fi
 # Just loaded new ls colors via dircolors, so change completion colors
 # to match
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+# function ls
+
 alias ls="ls $LSOPTS"
 alias ll="ls $LLOPTS | less -FX"
 
@@ -277,6 +280,8 @@ cd "$prev_dir"
 # lol
 set +o histexpand
 
-if [ "$TERM" = "xterm" ]; then
-  TERM=xterm-256color
+export emacs_compat_term='ansi'
+
+if ! [[ -v TERM ]] || [[ "$TERM" =~ "dumb|emacs" ]]; then
+  export TERM="${emacs_compat_term}"
 fi
