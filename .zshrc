@@ -260,11 +260,7 @@ fi
 
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
-
 source "$ZSH_DIR/find_closest_command_not_found.zsh"
-
-# set default editor to emacs
-export EDITOR="emacsclient"
 
 # if on cygwin
 if $iswin; then

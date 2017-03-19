@@ -21,30 +21,22 @@ else
     emacsclient -c -nw -a '' $@
   }
 fi
-alias 'emacs'='run-emacs'
 
 function ec {
   emacsclient -n $@
 }
 
 
-# function str_to_array {
-# }
-
-# b=("${(f)$(printf '-e\n%s\n' $a)}");
-
-
-# the second argument/return value of this function is the globally exported variable "prepend_to_els"
+# prepend_tmp_arr is the argument and return value of prepend_to_els()
 export prepend_tmp_arr=()
 function prepend_to_els {
   pre_str="$1"
   prepend_tmp_arr=("${(f)$(printf "${pre_str}\n%s\n" $prepend_tmp_arr)}")
 }
 
-export emacsclient_eval_arg='-e'
 function ece {
   prepend_tmp_arr=("$@")
-  prepend_to_els "${emacsclient_eval_arg}"
+  prepend_to_els '-e'
   ec $prepend_tmp_arr
 }
 
