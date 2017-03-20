@@ -64,8 +64,7 @@ alias 'update-grub'='grub-mkconfig -o /boot/grub/grub.cfg'
 alias 'ipython_start'='nohup ipython notebook &'
 
 if hash yaourt 2>/dev/null; then
-  # function yaourt {
-  #   yaourt --noconfirm $@
-  # }
-  alias 'yaourt'='yaourt --noconfirm'
+  function y {
+    yaourt --noconfirm $@
+  }
 fi
