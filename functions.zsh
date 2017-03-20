@@ -24,21 +24,14 @@ function var_log {
   print_var_with_val "$varname" "${(P)varname}"
 }
 
-function show_args {
-  print_var_val '#'
-  for arg; do print_var_val "$arg"; done
-}
-function exp {
-    echo "${(e)${1}}"
-}
-function split_args {
-  "$1" "${=@:2}"
+function show_vars {
+  for arg; do var_log "$arg"; done
 }
 
-default_sep='----\n'
 
+export DEFAULT_SEP='----\n'
 function print_sep {
-  echo -n "$default_sep"
+  echo -n "$DEFAULT_SEP"
 }
 
 function sep {
@@ -187,12 +180,6 @@ function bye {
 
 function goodread {
   read -r $@
-}
-
-export cond_yes='yup'
-export cond_no='nah'
-function cond {
-  $@ && echo "${cond_yes}" || echo "${cond_no}"
 }
 
 function vomit {

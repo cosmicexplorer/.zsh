@@ -26,6 +26,20 @@ function ec {
   emacsclient -n $@
 }
 
+function ecr {
+  local tmpdir="$(mktemp -d)"
+  local fifo="$tmpdir/fifo"
+  local load_cmd="$(printf '(load "%s/read-pipe.el")\n' "$ZSH_DIR")"
+  local read_cmd="$(printf '(read-from-pipe "%s" "%s")\n' "$fifo" "$tmpdir")"
+
+  mkfifo "$fifo"
+
+  emacsclient \
+   -e "$load_cmd" \
+   -e "$read_cmd" >/dev/null &!
+
+  >"$fifo"
+}
 
 # prepend_tmp_arr is the argument and return value of prepend_to_els()
 export prepend_tmp_arr=()
