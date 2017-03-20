@@ -180,16 +180,6 @@ function precmd {
   # Shorten homedir back to '~'
   local shortpwd=${PWD/$HOME/\~}
   title "zsh $shortpwd"
-  local left_esc="${(S%%)PROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}"
-  # echo "left_esc=$left_esc"
-  local leftlen="${#${(S%%)RPROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}}"
-  local rightwidth=$(($COLUMNS-${leftlen}))
-  # echo "leftlen=$leftlen,rightwidth=$rightwidth,COLUMNS=$COLUMNS"
-  # RPROMPT_BARE=
-  # RPROMPT="${(l:$rightwidth::.:)RPROMPT_BARE}"
-  # local right_esc="${(S%%)RPROMPT//(\%([KF1]|)\{*\}|\%[Bbkf])}"
-  # echo "right_esc=$right_esc"
-  # print -P "${RPROMPT}"
 }
 
 function preexec {
@@ -289,12 +279,13 @@ cd "$prev_dir"
 # lol
 set +o histexpand
 
-export emacs_compat_term='ansi'
+export emacs_compat_term='xterm-256color'
 if ! [[ -v TERM ]]; then
   echo "no TERM! exiting..."
   exit 1
 elif [[ "$TERM" =~ "dumb|emacs" ]]; then
   export TERM="${emacs_compat_term}"
+  unset RPROMPT
 else
   export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi

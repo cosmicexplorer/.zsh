@@ -185,3 +185,5 @@ function goodread {
 function vomit {
   zsh -xi -c exit 2>&1
 }
+
+# TODO: od command!

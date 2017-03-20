@@ -8,7 +8,7 @@ alias 'sl'='ls'
 
 # because nobody cares
 export nohup_out_f='/tmp/nohup.out'
-alias 'nohup' 'nohup >>$nohup_out_f'
+alias 'nohup'='nohup >>$nohup_out_f'
 
 # start emacs non-windowed, use the snapshot version instead
 if "${iswin}"; then
@@ -56,7 +56,7 @@ function ece {
 
 # TODO: \t
 
-alias 'suvim' 'sudo vim -u $HOME/.vimrc'
+alias 'suvim'='sudo vim -u $HOME/.vimrc'
 
 # close R without prompting to save worksprace
 alias 'R'='R --no-save'
