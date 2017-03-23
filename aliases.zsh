@@ -27,18 +27,16 @@ function ec {
 }
 
 function ecr {
-  local tmpdir="$(mktemp -d)"
-  local fifo="$tmpdir/fifo"
-  local load_cmd="$(printf '(load "%s/read-pipe.el")\n' "$ZSH_DIR")"
-  local read_cmd="$(printf '(read-from-pipe "%s" "%s")\n' "$fifo" "$tmpdir")"
+  (
+    with-fifo 'cat' 'add-newline-if-not' && \
+      emacsclient -e \
+       "(load \"$ZSH_DIR/read-pipe.el\")" \
+       "(read-from-pipe \"${WITH_FIFO_OUT_QUEUES[1]}\")" \
+       >/dev/null 2>"${WITH_FIFO_IN_QUEUES[2]}" &
 
-  mkfifo "$fifo"
-
-  emacsclient \
-   -e "$load_cmd" \
-   -e "$read_cmd" >/dev/null &!
-
-  >"$fifo"
+    cat <"${WITH_FIFO_OUT_QUEUES[2]}" >&2 &
+    >"${WITH_FIFO_IN_QUEUES[1]}"
+  )
 }
 
 # prepend_tmp_arr is the argument and return value of prepend_to_els()
@@ -49,9 +47,7 @@ function prepend_to_els {
 }
 
 function ece {
-  prepend_tmp_arr=("$@")
-  prepend_to_els '-e'
-  ec $prepend_tmp_arr
+  emacsclient -e $@
 }
 
 # TODO: \t

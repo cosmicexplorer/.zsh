@@ -242,6 +242,17 @@ bindkey "\eOA" up-line-or-local-history
 bindkey "\e[B" down-line-or-local-history
 bindkey "\eOB" down-line-or-local-history
 
+export SNIPPETS_DIR="$ZSH_DIR/snippets"
+function get_shell_snippets {
+  local script
+  find "$SNIPPETS_DIR" -type f -name "*.zsh" -not -perm '/u+x' | \
+    while read -r script; do source "$script"; done
+}
+
+[ -f "$SNIPPETS_DIR/.git" ] || git submodule update --init --recursive && \
+    get_shell_snippets
+
+
 source "$ZSH_DIR/paths.zsh"
 
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then

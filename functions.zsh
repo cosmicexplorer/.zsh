@@ -19,6 +19,9 @@ function print_var_with_val {
   printf "$fmt" "${varname}" "${val}"
 }
 
+function add-newline-if-not {
+  sed -e '$a\'
+}
 function var_log {
   varname="$1"
   print_var_with_val "$varname" "${(P)varname}"
