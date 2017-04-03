@@ -297,6 +297,7 @@ if ! [[ -v TERM ]]; then
 elif [[ "$TERM" =~ "dumb|emacs" ]]; then
   export TERM="${emacs_compat_term}"
   unset RPROMPT
+  export PROMPT="X> "
 else
   export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi
