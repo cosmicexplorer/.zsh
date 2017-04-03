@@ -6,9 +6,11 @@ export ZSH_DIR=~/.zsh
 
 autoload colors; colors
 
-autoload -Uz compinit promptinit
-compinit
-promptinit
+autoload -Uz compinit promptinit; compinit; promptinit
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
 
 ### Tab completion
 
