@@ -47,14 +47,8 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' ignored-patterns '*?.pyc' '__pycache__'
 zstyle ':completion:*:*:rm:*:*' ignored-patterns
 
-zstyle :compinstall filename '~/.zshrc'
-
 # Always do mid-word tab completion
 setopt complete_in_word
-
-autoload -Uz compinit
-compinit
-
 
 ### History
 setopt extended_history hist_no_store hist_ignore_dups hist_expire_dups_first \
