@@ -286,12 +286,12 @@ cd "$prev_dir"
 # lol
 set +o histexpand
 
-export emacs_compat_term='xterm-256color'
+export COMPAT_TERM='xterm-256color'
 if ! [[ -v TERM ]]; then
   echo "no TERM! exiting..."
   exit 1
 elif [[ "$TERM" =~ "dumb|emacs" ]]; then
-  export TERM="${emacs_compat_term}"
+  export TERM="${COMPAT_TERM}"
   unset RPROMPT
   export PROMPT="X> "
 else

@@ -42,20 +42,12 @@ function sep {
   print_sep
 }
 
-# grep is da bomb
 function g {
-  grep -nHiP --color=always $@
+  grep -nHiP --color=auto --binary-files=without-match $@
 }
 # recursive
 function gr {
   g -R $@ .
-}
-function gc {
-  grep -iP --binary-files=without-match --color=never $@
-}
-# thorough
-function gt {
-  grep -F --binary-files=text --dereference-recursive --devices=read $@ .
 }
 
 # ps is cool too
