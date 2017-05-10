@@ -173,12 +173,15 @@ function bye {
   $@ && exit
 }
 
-function goodread {
-  read -r $@
-}
-
 function vomit {
   zsh -xi -c exit 2>&1
 }
 
-# TODO: od command!
+function k {
+  kill -9 $@
+}
+
+function b {
+  od -t c -Ad -w10
+}
+
