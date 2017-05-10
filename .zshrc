@@ -283,9 +283,9 @@ your internet connection is up, then try running \
 fi
 cd "$prev_dir"
 
-# lol
 set +o histexpand
 
+export ORIG_TERM="$TERM"
 export COMPAT_TERM='xterm-256color'
 if ! [[ -v TERM ]]; then
   echo "no TERM! exiting..."
@@ -297,3 +297,9 @@ elif [[ "$TERM" =~ "dumb|emacs" ]]; then
 else
   export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi
+
+if [[ "$SHLVL" -le 1 ]] && [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
+  export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
+fi
+
+export EDITOR="emacsclient"

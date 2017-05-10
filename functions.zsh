@@ -52,7 +52,7 @@ function gr {
 
 # ps is cool too
 function p {
-  ps aux $@
+  ps aux | grep -iP --color=auto --binary-files=without-match $@
 }
 function ptree {
   ps auxf $@
@@ -185,3 +185,48 @@ function b {
   od -t c -Ad -w10
 }
 
+function exec-find {
+  whence -p $@
+}
+
+function no-stderr-unless-err {
+  local -a cmd=( "$@" )
+  local out code
+  out="$($cmd 2>&1)" || (code="$?"; echo "$out"; return "$code")
+}
+
+function valid-ssh-agent-p {
+  [[ -v SSH_AUTH_SOCK && -S "$SSH_AUTH_SOCK" ]] && \
+    ( [[ -v SSH_AGENT_PID ]] && kill -0 "$SSH_AGENT_PID" 2>/dev/null )
+}
+
+function make-ssh-agent {
+  local ssh_vars
+  ssh_vars="$(ssh-agent -s)" && \
+    eval "$ssh_vars" && \
+    valid-ssh-agent-p
+}
+
+export SSHPASS_FILE="$ZSH_DIR/.sshpass"
+
+function add-ssh {
+  if [[ -f "$SSHPASS_FILE" ]]; then
+    export DISPLAY=":0"
+    export SSH_ASKPASS="$ZSH_DIR/read-ssh-pass.sh"
+    ssh-add <"$SSHPASS_FILE"
+  else
+    ssh-add
+  fi
+}
+
+function setup-ssh-agent {
+  if exec-find ssh-agent ssh-add >/dev/null; then
+    if valid-ssh-agent-p || make-ssh-agent >/dev/null; then
+      add-ssh
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
+}
