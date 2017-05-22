@@ -110,6 +110,14 @@ value, all lists are either quoted or separated with commas.
 EOF
 }
 
+function emacs-list-processes {
+  ps u -C emacs
+}
+
+function emacs-kill-processes {
+  ps -C emacs -o pid:1 --no-headers | xargs kill -9
+}
+
 # TODO: make this better
 # function find-grep {
 #   find

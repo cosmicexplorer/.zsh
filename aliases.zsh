@@ -26,6 +26,7 @@ function ec {
   emacsclient -n $@
 }
 
+# NOTE: this function is so so nice
 function ecr {
   (
     with-fifo 'cat' 'add-newline-if-not' && \
@@ -39,6 +40,7 @@ function ecr {
   )
 }
 
+# was used for "ece", but unneeded
 # prepend_tmp_arr is the argument and return value of prepend_to_els()
 export prepend_tmp_arr=()
 function prepend_to_els {
@@ -49,6 +51,9 @@ function prepend_to_els {
 function ece {
   emacsclient -e $@
 }
+
+alias el='emacs-list-processes'
+alias ek='emacs-kill-processes'
 
 # TODO: \t
 
