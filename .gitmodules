@@ -5,3 +5,4 @@
 [submodule "snippets"]
         path = snippets
         url = git@github.com:cosmicexplorer/snippets
+        ignore = dirty
