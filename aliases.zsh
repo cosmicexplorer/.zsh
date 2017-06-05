@@ -83,3 +83,13 @@ if hash yaourt 2>/dev/null; then
     yaourt --noconfirm $@
   }
 fi
+
+if hash pass 2>/dev/null; then
+  function pw {
+    if [[ "$#" -eq 0 ]]; then
+      echo "USAGE: pw PASS-NAME [ARGS...]" >&2
+      return -1
+    fi
+    pass insert ${@:2} "$1" && pass show "$1"
+  }
+fi
