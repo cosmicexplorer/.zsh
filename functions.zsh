@@ -197,10 +197,8 @@ function exec-find {
   whence -p $@
 }
 
-function no-stderr-unless-err {
-  local -a cmd=( "$@" )
-  local out code
-  out="$($cmd 2>&1)" || (code="$?"; echo "$out"; return "$code")
+function null {
+  cat /dev/null
 }
 
 function valid-ssh-agent-p {
@@ -237,4 +235,16 @@ function setup-ssh-agent {
   else
     return 1
   fi
+}
+
+function silent-on-success {
+  local -a cmd=( "$@" )
+  local outf="$(mktemp)" errf="$(mktemp)" code
+  trap "rm -f $outf $errf" EXIT
+  $cmd \
+    >"$outf" 2>"$errf"
+  code="$?"
+  >&2 [[ ( "$code" -ne 0 ) || ( -v ERR ) ]] && cat "$errf" || null
+  [[ ( "$code" -ne 0 ) || ( -v OUT ) ]] && cat "$outf"
+  return code
 }
