@@ -15,7 +15,7 @@ export default_print_var_val_fmt="'\$%s'=>'%s'\n"
 function print_var_with_val {
   varname="$1"
   val="$2"
-  fmt="${3:-"$default_print_var_val_fmt"}"
+  fmt="${3:-""$default_print_var_val_fmt""}"
   printf "$fmt" "${varname}" "${val}"
 }
 
@@ -247,4 +247,46 @@ function silent-on-success {
   >&2 [[ ( "$code" -ne 0 ) || ( -v ERR ) ]] && cat "$errf" || null
   [[ ( "$code" -ne 0 ) || ( -v OUT ) ]] && cat "$outf"
   return code
+}
+
+# TODO: make a wrapper for zparseopts that generates help text!
+function all-found-p {
+  local -A opts
+  zparseopts -A opts -D -M \
+             v -verbose=v \
+             h -help=h
+  local -ra pos=( "$@" )
+
+  if [[ "${#pos}" -eq 0 || "${#opts[(I)-h]}" -ne 0 ]]; then
+    echo "USAGE: all-found-p [ -v ] [ -h ] SPEC...\n" >&2
+    echo \
+      "Each SPEC is of the format \`name=type'. This function will search" \
+      "for an instance of \`name' registered as the given \`type', where" \
+      "\`type' corresponds to the output of \`whence -w'." >&2
+
+    return 1
+  fi
+
+  for const in $pos; do
+    if [[ "$const" =~ ^([^=]+)=([^=]+)$ ]]; then
+      local ident="${match[1]}" typespec="${match[2]}"
+      local pat="$(printf "^%s:[[:space:]]+%s" "$ident" "$typespec")"
+      if ! whence -wa "$ident" | grep -Pq "$pat"; then
+        printf "identifier '%s' of type '%s' could not be found\n" \
+               "$ident" "$typespec" >&2
+        return 1
+      fi
+    elif [[ "$const" =~ ^([^=]+)=?$ ]]; then
+      local ident="${match[1]}"
+      if ! whence -wa "$ident" >/dev/null; then
+        printf "identifier '%s' could not be found\n" "$ident" >&2
+        return 1
+      fi
+    else
+      printf "name/type pair '%s' could not be parsed\n" "$const" >&2
+      return 1
+    fi
+  done
+
+  return 0
 }
