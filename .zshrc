@@ -105,15 +105,11 @@ export iswin
 # centralize aliases to single file
 source "$ZSH_DIR/aliases.zsh"
 
-# Don't glob with find or wget
-for command in find wget; do
-  alias $command="noglob $command"
-done
-
 ### ls
 
 # long mode, show all, natural sort, type squiggles, friendly sizes
-if hash dircolors 2>/dev/null; then
+if hash dircolors 2>/dev/null && \
+    [[ -v TERM && ! "$TERM" =~ 'dumb|emacs' ]]; then
   eval "$(dircolors -b)"
   LSOPTS='-lAvFh --si --color=always'
   LLOPTS='-lAvFh --color=always'
