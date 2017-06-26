@@ -247,10 +247,6 @@ function get_shell_snippets {
 
 source "$ZSH_DIR/paths.zsh"
 
-if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
-  source "$ZSH_DIR/.zshbashpaths"
-fi
-
 # add command recognition i.e. "did you mean <x>?"
 # like in ubuntu's command-not-found module
 source "$ZSH_DIR/find_closest_command_not_found.zsh"
@@ -299,3 +295,8 @@ if [[ "$SHLVL" -le 1 ]] && [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
 fi
 
 export EDITOR="emacsclient"
+
+
+if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
+  source "$ZSH_DIR/.zshbashpaths"
+fi

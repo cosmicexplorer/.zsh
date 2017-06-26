@@ -217,9 +217,8 @@ export SSHPASS_FILE="$ZSH_DIR/.sshpass"
 
 function add-ssh {
   if [[ -f "$SSHPASS_FILE" ]]; then
-    export DISPLAY=":0"
     export SSH_ASKPASS="$ZSH_DIR/read-ssh-pass.sh"
-    ssh-add <"$SSHPASS_FILE"
+    DISPLAY=":0" ssh-add <"$SSHPASS_FILE"
   else
     ssh-add
   fi
