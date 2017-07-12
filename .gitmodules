@@ -1,7 +1,3 @@
-[submodule "regex-opt"]
-        path = regex-opt
-        url = git://bisqwit.iki.fi/regex-opt.git
-        ignore = dirty
 [submodule "snippets"]
         path = snippets
         url = git@github.com:cosmicexplorer/snippets
