@@ -1,5 +1,9 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+function err {
+  cat $@ >&2
+}
+
 function get-last-arg {
   lastArg=""
   prevArgs=""
@@ -237,15 +241,16 @@ function setup-ssh-agent {
 }
 
 function silent-on-success {
-  local -a cmd=( "$@" )
-  local outf="$(mktemp)" errf="$(mktemp)" code
-  trap "rm -f $outf $errf" EXIT
-  $cmd \
-    >"$outf" 2>"$errf"
-  code="$?"
-  >&2 [[ ( "$code" -ne 0 ) || ( -v ERR ) ]] && cat "$errf" || null
-  [[ ( "$code" -ne 0 ) || ( -v OUT ) ]] && cat "$outf"
-  return code
+  local -ra cmd=( "$@" )
+  local -r tmpdir="$(mktemp -d)"
+  local -r outf="$tmpdir/stdout" errf="$tmpdir/stderr"
+  trap "rm -rf $tmpdir" EXIT
+  ${cmd} >"$outf" 2>"$errf" || (
+    local -r code="$?"
+    cat "$outf"
+    err "$errf"
+    return "$code"
+  )
 }
 
 # TODO: make a wrapper for zparseopts that generates help text!

@@ -1,24 +1,21 @@
-# needed to bootstrap on windows
-PATH=$PATH:/bin
-
+# defining $ZSH_DIR makes sourcing other files easy -- see this link for details
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-export ZSH_DIR=~/.zsh
+local -r this_file="$(readlink -e ${(%):-%x})"
+export ZSH_DIR="$(dirname "$this_file")"
 
 autoload colors; colors
-
 autoload -Uz compinit promptinit; compinit; promptinit
-
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
 
 ### Tab completion
 
-# Force a reload of completion system if nothing matched; this fixes installing
-# a program and then trying to tab-complete its name
-_force_rehash() {
+# Force a reload of completion system if nothing matched
+# this fixes installing a program and then trying to tab-complete its name
+function _force_rehash {
   (( CURRENT == 1 )) && rehash
-  return 1 # Because we didn't really complete anything
+  return 1
 }
 
 # Always use menu completion, and make the colors pretty!
@@ -67,8 +64,7 @@ unsetopt notify
 WORDCHARS=${WORDCHARS//[&.;\/]}
 
 # Words cannot express how fucking sweet this is
-REPORTTIME=5
-
+REPORTTIME=2
 
 ### Prompt
 
@@ -251,16 +247,6 @@ source "$ZSH_DIR/paths.zsh"
 # like in ubuntu's command-not-found module
 source "$ZSH_DIR/find_closest_command_not_found.zsh"
 
-# if on cygwin
-if $iswin; then
-  /cygdrive/c/Windows/System32/cmd.exe /c "echo export PATH='%PATH%'" > .winpath
-  PATH="/bin:/usr/bin"
-  "$ZSH_DIR"/convert_winpath.sh .winpath
-  source .winpath
-  PATH="/bin:/mingw/bin:$PATH"
-  rm .winpath
-fi
-
 # setup regex-opt
 prev_dir="$(pwd)"
 if [ ! -f "$ZSH_DIR/regex-opt/regex-opt" ] && [ ! -f "$ZSH_DIR/.NOREGOPT" ]; then
@@ -295,7 +281,6 @@ if [[ "$SHLVL" -le 1 ]] && [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
 fi
 
 export EDITOR="emacsclient"
-
 
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
   source "$ZSH_DIR/.zshbashpaths"
