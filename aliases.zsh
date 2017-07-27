@@ -11,7 +11,7 @@ export nohup_out_f='/tmp/nohup.out'
 alias 'nohup'='nohup >>$nohup_out_f'
 
 # start emacs non-windowed, use the snapshot version instead
-if "${iswin}"; then
+if [[ -v WIN ]]; then
   function run-emacs {
     nohup emacs ${@} &
   }

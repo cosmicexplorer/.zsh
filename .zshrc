@@ -87,17 +87,11 @@ export PAGER=less
 # I'd love to have the effect of -F, but I don't want -X all the time, alas.
 export LESS="-RMi~Kq"
 
-if whence ack-grep &> /dev/null; then
-  alias ack=ack-grep
-fi
-if hash aptitude 2>/dev/null; then
-  alias apt='sudo aptitude'
+export UNAME_BASE="$(uname -a | cut -b-5)"
+if [[ "$UNAME_BASE" = "MINGW" || "$UNAME_BASE" = "CYGWIN" ]]; then
+  export WIN="$UNAME_BASE"
 fi
 
-winosname="$(uname -a | cut -b-5)"
-iswin="$([ "$winosname" = "MINGW" ] || [ "$winosname" = "CYGWI" ] && \
-    echo true || echo false)"
-export iswin
 # centralize aliases to single file
 source "$ZSH_DIR/aliases.zsh"
 
