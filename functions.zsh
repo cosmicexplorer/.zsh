@@ -179,34 +179,35 @@ function valid-ssh-agent-p {
     ( [[ -v SSH_AGENT_PID ]] && kill -0 "$SSH_AGENT_PID" 2>/dev/null )
 }
 
-function make-ssh-agent {
-  local ssh_vars
-  ssh_vars="$(ssh-agent -s)" && \
-    eval "$ssh_vars" && \
-    valid-ssh-agent-p
-}
-
 export SSHPASS_FILE="$ZSH_DIR/.sshpass"
 
+function make-ssh-agent {
+  local -r auth_path="$1"
+  ( [[ -f "$auth_path" ]] || ssh-agent -s > "$auth_path" ) && \
+    source "$auth_path"
+}
+
 function add-ssh {
-  if [[ -f "$SSHPASS_FILE" ]]; then
+  local -r auth_path="$1"
+  if [[ -f "$auth_path" ]]; then
     export SSH_ASKPASS="$ZSH_DIR/read-ssh-pass.sh"
-    DISPLAY=":0" ssh-add <"$SSHPASS_FILE"
+    DISPLAY=":0" ssh-add <"$auth_path"
   else
     ssh-add
   fi
 }
 
+export SSH_PW_FILE="$ZSH_DIR/.ssh_pw"
+
 function setup-ssh-agent {
-  if exec-find ssh-agent ssh-add >/dev/null; then
-    if valid-ssh-agent-p || make-ssh-agent >/dev/null; then
-      add-ssh
-    else
-      return 1
-    fi
-  else
-    return 1
+  if valid-ssh-agent-p; then return 0; fi
+  if ! exec-find ssh-agent ssh-add >/dev/null; then return 1; fi
+  make-ssh-agent "$SSHPASS_FILE"
+  if ! valid-ssh-agent-p; then
+    rm "$SSHPASS_FILE"
+    make-ssh-agent "$SSHPASS_FILE"
   fi
+  add-ssh "$SSH_PW_FILE"
 }
 
 function silent-on-success {

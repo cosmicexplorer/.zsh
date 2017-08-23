@@ -4,3 +4,5 @@ add_path_before_if /usr/local/bin
 add_path_before_if "$HOME/.local/bin"
 
 export PASSWORD_STORE_DIR="$HOME"
+
+export GPG_TTY="$(tty)"

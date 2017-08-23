@@ -38,7 +38,7 @@ function use_apt {
 
 if hash perl 2>/dev/null; then
   if ! perl -e "use Text::Levenshtein" 2>/dev/null; then
-    cpan "Text::Levenshtein"
+    sudo cpan "Text::Levenshtein"
   fi
   export CMD_NOT_FOUND_HANDLER=use_leven
 elif hash python3 2>/dev/null && \

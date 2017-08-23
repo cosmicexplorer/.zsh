@@ -1,6 +1,6 @@
 # defining $ZSH_DIR makes sourcing other files easy -- see this link for details
 # https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-local -r this_file="$(readlink -e ${(%):-%x})"
+local -r this_file="${(%):-%x}"
 export ZSH_DIR="$(dirname "$this_file")"
 
 autoload colors; colors
@@ -227,7 +227,7 @@ bindkey "\eOB" down-line-or-local-history
 export SNIPPETS_DIR="$ZSH_DIR/snippets"
 function get_shell_snippets {
   local script
-  find "$SNIPPETS_DIR" -type f -name "*.zsh" -not -perm '/u+x' | \
+  find "$SNIPPETS_DIR" -type f -name "*.zsh" | \
     while read -r script; do source "$script"; done
 }
 

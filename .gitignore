@@ -4,3 +4,4 @@ cache/
 .zshbashpaths
 # used for ssh-agent setup
 .sshpass
+.ssh_pw
