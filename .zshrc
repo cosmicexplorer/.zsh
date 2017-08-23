@@ -4,7 +4,8 @@ local -r this_file="${(%):-%x}"
 export ZSH_DIR="$(dirname "$this_file")"
 
 autoload colors; colors
-autoload -Uz compinit promptinit; compinit; promptinit
+autoload -Uz compinit; compinit
+autoload -Uz promptinit; promptinit
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line

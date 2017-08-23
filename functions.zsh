@@ -184,7 +184,7 @@ export SSHPASS_FILE="$ZSH_DIR/.sshpass"
 function make-ssh-agent {
   local -r auth_path="$1"
   ( [[ -f "$auth_path" ]] || ssh-agent -s > "$auth_path" ) && \
-    source "$auth_path"
+    source "$auth_path" >/dev/null
 }
 
 function add-ssh {
@@ -194,7 +194,7 @@ function add-ssh {
     DISPLAY=":0" ssh-add <"$auth_path"
   else
     ssh-add
-  fi
+  fi 2>/dev/null
 }
 
 export SSH_PW_FILE="$ZSH_DIR/.ssh_pw"
