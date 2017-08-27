@@ -232,9 +232,12 @@ function get_shell_snippets {
     while read -r script; do source "$script"; done
 }
 
-[ -f "$SNIPPETS_DIR/.git" ] || git submodule update --init --recursive && \
+if [ -d "$SNIPPETS_DIR/.git" ]; then
+  pushd "$SNIPPETS_DIR"
+  git submodule update --init --recursive && \
     get_shell_snippets
-
+  popd
+fi
 
 source "$ZSH_DIR/paths.zsh"
 
