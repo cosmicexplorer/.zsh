@@ -19,21 +19,30 @@ function use_cmd_not_found {
 function do_if_internet_route {
   (ip route | read) && $@
 }
+
 function use_pacman {
   local -r cmd="$1"
   echo -e "\033[1;33msearching pacman repositories...\033[1;0m"
-  pacman -Ss --color always "$cmd" | "$ZSH_DIR/group_results.pl" 2
+  pacman -Ss --color always "$cmd" | "$ZSH_DIR/group_results.pl"
 }
+
 function use_yaourt {
   local -r cmd="$1"
   echo -e "\033[1;33msearching pacman repositories and AUR...\033[1;0m"
-  yaourt -Ss --color "$cmd" | "$ZSH_DIR/group_results.pl" 2
+  yaourt -Ss --color "$cmd" | "$ZSH_DIR/group_results.pl"
 }
+
 function use_apt {
   local -r cmd="$1"
   echo -e "\033[1;33msearching apt cache...\033[1;0m"
   apt-cache search "$cmd" | \
     sed -r -e "s/^([^[:space:]]+)[[:space:]]+-[[:space:]]+(.+)\$/$(tput setaf 6)$(tput bold)\1$(tput sgr0)$(tput setaf 3)$(tput bold):$(tput sgr0) \2/g"
+}
+
+function use_brew {
+  local -r cmd="$1"
+  echo -e "\033[1;33msearching homebrew formulae...\033[1;0m"
+  brew search "$cmd" | "$ZSH_DIR/group_results.pl"
 }
 
 if hash perl 2>/dev/null; then
@@ -52,6 +61,8 @@ elif hash pacman 2>/dev/null; then
   export PACKAGE_SEARCH_HANDLER=use_pacman
 elif hash apt-cache 2>/dev/null; then
   export PACKAGE_SEARCH_HANDLER=use_apt
+elif hash brew 2>/dev/null; then
+  export PACKAGE_SEARCH_HANDLER=use_brew
 fi
 
 function get_trunc {

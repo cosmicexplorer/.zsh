@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-my ($group) = @ARGV;
-
 my $cur_lines = "";
 my $line_num = 0;
 
