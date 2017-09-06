@@ -264,3 +264,5 @@ function all-found-p {
 
   return 0
 }
+
+function shopt {}
