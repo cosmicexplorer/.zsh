@@ -42,7 +42,7 @@ function use_apt {
 function use_brew {
   local -r cmd="$1"
   echo -e "\033[1;33msearching homebrew formulae...\033[1;0m"
-  brew search "$cmd" | "$ZSH_DIR/group_results.pl"
+  brew search "$cmd"
 }
 
 if hash perl 2>/dev/null; then
