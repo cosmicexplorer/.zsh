@@ -7,3 +7,5 @@ add_path_before_if "$HOME/go/bin"
 export PASSWORD_STORE_DIR="$HOME"
 
 export GPG_TTY="$(tty)"
+
+add_path_if "$ZSH_DIR/snippets/bash"
