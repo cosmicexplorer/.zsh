@@ -9,3 +9,8 @@ export PASSWORD_STORE_DIR="$HOME"
 export GPG_TTY="$(tty)"
 
 add_path_if "$ZSH_DIR/snippets/bash"
+
+GOPATH="$HOME/go"
+GOROOT="/usr/local/opt/go/libexec"
+path_extend_export GOPATH bin
+path_extend_export GOROOT bin

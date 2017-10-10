@@ -1,5 +1,9 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+function printfmt {
+  printf "$1\n" ${@:2}
+}
+
 function err {
   cat $@ >&2
 }
@@ -136,6 +140,27 @@ function find-grep {
 }
 function grep-with-depth {
   find-grep . -maxdepth "$1" -type f "$2"
+}
+
+function path_extend_export {
+  local -r varname="$1"
+  if [[ ! -d "${(P)varname}" ]]; then
+    printfmt "parameter %s does not resolve to a valid directory (PATH=%s)" \
+             "$varname" "$PATH" >&2
+    return 1
+  fi
+  export "$varname"
+  local bindir="${(P)varname}"
+  if [[ -v 2 ]]; then
+    bindir="$bindir/$2"
+  fi
+  if [[ ! -d "$bindir" ]]; then
+    printfmt "proposed path extension '%s' does not exist (PATH='%s')" \
+             "$bindir" "$PATH" >&2
+    return 1
+  else
+    PATH="$PATH:$bindir"
+  fi
 }
 
 function add_path_before_if {
