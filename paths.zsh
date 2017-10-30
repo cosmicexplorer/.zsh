@@ -18,3 +18,6 @@ if [[ -d "$BREW_GOROOT" ]]; then
 fi
 GOROOT="/usr/local/opt/go/libexec"
 path_extend_export GOPATH bin
+
+CARGOPATH="$HOME/.cargo"
+path_extend_export CARGOPATH bin
