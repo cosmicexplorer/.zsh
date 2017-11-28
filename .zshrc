@@ -264,7 +264,8 @@ if [[ "$SHLVL" -le 1 ]] && [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
   export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
 fi
 
-export EDITOR="emacsclient"
+export EDITOR='emacsclient'
+export VISUAL="$EDITOR"
 
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
   source "$ZSH_DIR/.zshbashpaths"
