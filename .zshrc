@@ -264,7 +264,7 @@ if [[ "$SHLVL" -le 1 ]]; then
   if [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
     export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
   fi
-  if hash startx >/dev/null; then
+  if hash startx >/dev/null && ! (uname -a | grep -P '^Darwin' >/dev/null); then
     startx
   fi
   if hash gpg-agent >/dev/null; then
