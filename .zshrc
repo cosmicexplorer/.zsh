@@ -260,11 +260,26 @@ else
   export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi
 
-if [[ "$SHLVL" -le 1 ]] && [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
-  export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
+if [[ "$SHLVL" -le 1 ]]; then
+  if [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
+    export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
+  fi
+  if hash startx >/dev/null; then
+    startx
+  fi
+  if hash gpg-agent >/dev/null; then
+    export GPG_FILE=~/.gpg-env
+    if [[ "$(p gpg-agent | wc -l)" -lt 2 ]]; then
+      gpg-agent --daemon --allow-preset-passphrase --write-env-file "$GPG_FILE"
+    fi
+    source "$GPG_FILE"
+    export GPG_AGENT_INFO
+  fi
 fi
 
-export EDITOR='emacsclient'
+if hash emacsclient >/dev/null; then
+  export EDITOR="emacsclient"
+fi
 export VISUAL="$EDITOR"
 
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then

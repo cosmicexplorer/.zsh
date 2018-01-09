@@ -11,6 +11,13 @@ export GPG_TTY="$(tty)"
 add_path_if "$ZSH_DIR/snippets/bash"
 
 GOPATH="$HOME/go"
+BREW_GOROOT='/usr/local/opt/go/libexec'
+if [[ -d "$BREW_GOROOT" ]]; then
+    GOROOT="$BREW_GOROOT"
+    path_extend_export GOROOT bin
+fi
 GOROOT="/usr/local/opt/go/libexec"
 path_extend_export GOPATH bin
-path_extend_export GOROOT bin
+
+CARGOPATH="$HOME/.cargo"
+path_extend_export CARGOPATH bin
