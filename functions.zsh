@@ -60,7 +60,7 @@ function gr {
 
 # ps is cool too
 function p {
-  ps aux | grep -iP --color=auto --binary-files=without-match $@
+  ps aux | grep -vP '\bgrep\b' | grep -iP --color=auto --binary-files=without-match $@
 }
 function ptree {
   ps auxf $@
