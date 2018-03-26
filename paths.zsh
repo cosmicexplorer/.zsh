@@ -21,3 +21,11 @@ path_extend_export GOPATH bin
 
 CARGOPATH="$HOME/.cargo"
 path_extend_export CARGOPATH bin
+
+if [[ -f '/etc/profile.d/jre.sh' ]]; then
+    source /etc/profile.d/jre.sh
+fi
+
+if hash javac 2>/dev/null; then
+  export JAVA_HOME="$(readlink -f "$(which javac)" | sed -re 's#/bin/javac##g')"
+fi
