@@ -142,37 +142,60 @@ function grep-with-depth {
   find-grep . -maxdepth "$1" -type f "$2"
 }
 
-function path_extend_export {
-  local -r varname="$1"
-  if [[ ! -d "${(P)varname}" ]]; then
-    printfmt "parameter %s does not resolve to a valid directory (PATH=%s)" \
-             "$varname" "$PATH" >&2
-    return 1
+function export_var_if_new_dir {
+  local -r dir_path="$1" var_name="$2"
+
+  if [[ -v "$var_name" ]]; then
+    warn-here <<EOF
+env var '${var_name}' is already defined!
+prev: '${(P)var_name}', attempted: '${dir_path}'
+EOF
+    return 0
   fi
-  export "$varname"
-  local bindir="${(P)varname}"
-  if [[ -v 2 ]]; then
-    bindir="$bindir/$2"
-  fi
-  if [[ ! -d "$bindir" ]]; then
-    printfmt "proposed path extension '%s' does not exist (PATH='%s')" \
-             "$bindir" "$PATH" >&2
-    return 1
+
+  if [[ -d "$dir_path" ]]; then
+    export "${var_name}=${dir_path}"
   else
-    PATH="$PATH:$bindir"
+    warn-here <<EOF
+attempted value '${dir_path}' for var '${var_name}' is not a directory!
+EOF
+    return 0
+  fi
+}
+
+function export_var_extend_bin_if {
+  local -r dir_path="$1" var_name="$2"
+
+  export_var_if_new_dir "$dir_path" "$var_name"
+
+  local -r bin_dir="${dir_path}/bin"
+  if [[ -d "$bin_dir" ]]; then
+    export PATH="${PATH}:${bin_dir}"
   fi
 }
 
 function add_path_before_if {
-  for arg in $@; do
-    [ -d "$arg" ] && PATH="$arg:$PATH"
+  for arg; do
+    [[ -d "$arg" ]] && PATH="$arg:$PATH"
   done
 }
 
 function add_path_if {
-  for arg in $@; do
-    [ -d "$arg" ] && PATH="$PATH:$arg"
+  for arg; do
+    [[ -d "$arg" ]] && PATH="$PATH:$arg"
   done
+}
+
+function warn {
+  if [[ -v WARNINGS_ON ]]; then
+    echo >&2 "$@"
+  fi
+}
+
+function warn-here {
+  if [[ -v WARNINGS_ON ]]; then
+    cat >&2
+  fi
 }
 
 function bye {
@@ -193,6 +216,10 @@ function b {
 
 function exec-find {
   whence -p $@
+}
+
+function has-exec {
+  whence -p $@ >/dev/null
 }
 
 function null {
@@ -290,8 +317,6 @@ function all-found-p {
   return 0
 }
 
-function shopt {}
-
-function get_battery {
+function get-that-battery-tho {
   upower -i $(upower -e | grep 'BAT') | grep -E "state|to\ full|percentage"
 }

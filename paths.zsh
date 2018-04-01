@@ -1,6 +1,6 @@
 add_path_if /usr/bin/{core_perl,vendor_perl}
 add_path_if "$HOME/.cabal/bin"
-add_path_before_if /usr/local/bin
+add_path_before_if '/usr/local/bin'
 add_path_before_if "$HOME/.local/bin"
 add_path_before_if "$HOME/go/bin"
 
@@ -10,22 +10,22 @@ export GPG_TTY="$(tty)"
 
 add_path_if "$ZSH_DIR/snippets/bash"
 
-GOPATH="$HOME/go"
-BREW_GOROOT='/usr/local/opt/go/libexec'
-if [[ -d "$BREW_GOROOT" ]]; then
-    GOROOT="$BREW_GOROOT"
-    path_extend_export GOROOT bin
-fi
-GOROOT="/usr/local/opt/go/libexec"
-path_extend_export GOPATH bin
+export_var_extend_bin_if "${HOME}/go" GOPATH
 
-CARGOPATH="$HOME/.cargo"
-path_extend_export CARGOPATH bin
+export_var_extend_bin_if '/usr/local/opt/go/libexec' GOROOT
+
+export_var_extend_bin_if "${HOME}/.cargo" CARGOPATH
+
+if has-exec rustc; then
+  export RUSTC_SYSROOT="$(rustc --print sysroot)"
+  export_var_if_new_dir "${RUSTC_SYSROOT}/lib/rustlib/src/rust/src" RUST_SRC_PATH
+  export_var_if_new_dir "${RUSTC_SYSROOT}/lib/rustlib/etc" RUST_ETC_PATH
+fi
 
 if [[ -f '/etc/profile.d/jre.sh' ]]; then
     source /etc/profile.d/jre.sh
 fi
 
-if hash javac 2>/dev/null; then
-  export JAVA_HOME="$(readlink -f "$(which javac)" | sed -re 's#/bin/javac##g')"
+if has-exec javac; then
+  export JAVA_HOME="$(readlink -f "$(exec-find javac)" | sed -re 's#/bin/javac##g')"
 fi
