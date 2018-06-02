@@ -93,3 +93,10 @@ if hash pass 2>/dev/null; then
     pass insert ${@:2} "$1" && pass show "$1"
   }
 fi
+
+export GH_USERNAME='cosmicexplorer'
+function gh-ssh {
+  local -r repo="$1"
+  local -ra rest=("${@:2}")
+  git clone "git@github.com:${GH_USERNAME}/${repo}" "${rest[@]}"
+}
