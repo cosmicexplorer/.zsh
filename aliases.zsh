@@ -1,6 +1,6 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
-source "$ZSH_DIR/functions.zsh"
+source "${ZSH_DIR}/functions.zsh"
 
 alias 'l'='ls'
 alias 's'='ls'

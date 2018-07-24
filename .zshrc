@@ -94,7 +94,10 @@ if [[ "$UNAME_BASE" = "MINGW" || "$UNAME_BASE" = "CYGWIN" ]]; then
 fi
 
 # centralize aliases to single file
-source "$ZSH_DIR/aliases.zsh"
+source "${ZSH_DIR}/aliases.zsh"
+
+source "${ZSH_DIR}/git_wrapper.zsh"
+source "${ZSH_DIR}/pants_wrapper.zsh"
 
 ### ls
 

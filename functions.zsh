@@ -320,3 +320,12 @@ function all-found-p {
 function get-that-battery-tho {
   upower -i $(upower -e | grep 'BAT') | grep -E "state|to\ full|percentage"
 }
+
+function with-pushd {
+  local -r dir="$1"
+  local -a argv=("${@:2}")
+
+  pushd "$dir" \
+    && "${argv[@]}" \
+    && popd
+}
