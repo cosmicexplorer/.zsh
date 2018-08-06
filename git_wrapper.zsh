@@ -4,6 +4,9 @@ function get-git-root {
   git rev-parse --show-toplevel
 }
 
+GIT_MERGE_BASE_CALCULATED_AGAINST_REFSPEC='master'
+
 function git-merge-base {
-  git merge-base HEAD "$1"
+  local -r refspec="${1:-${GIT_MERGE_BASE_CALCULATED_AGAINST_REFSPEC}}"
+  git merge-base HEAD "$refspec"
 }
