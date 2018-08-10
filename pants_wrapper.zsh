@@ -18,6 +18,6 @@ function kill-all-pants {
   set +x
   get-pants-procs | xargs kill -9
   with-pants-root \
-    rm -r .pids/ .pants.workdir.file_lock*
+    rm -rfv .pids/ .pants.workdir.file_lock*
   set -x
 }
