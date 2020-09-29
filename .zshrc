@@ -71,15 +71,15 @@ REPORTTIME=2
 
 # %(!.☭.⚘)
 
+RPROMPT_code="%(?..\$? %{$fg_no_bold[red]%}%?%{$reset_color%} )"
+RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
+RPROMPT_time="%{$fg_no_bold[yellow]%}%*%{$reset_color%}"
 # export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
 # %{$fg_bold[blue]%}%~%{$reset_color%}${_newline}X> "
 export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
-%{$fg_bold[blue]%}%~%{$reset_color%}
-X> "
+%{$fg_bold[blue]%}%~%{$reset_color%} $RPROMPT_time $RPROMPT_code$RPROMPT_jobs
+%{$fg_bold[cyan]%}X>%{$reset_color%} "
 #☭%(!.☭.>) "
-RPROMPT_code="%(?..\$? %{$fg_no_bold[red]%}%?%{$reset_color%} )"
-RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
-RPROMPT_time="%{$fg_bold[black]%}%*%{$reset_color%}"
 
 ### Misc aliases
 
@@ -260,7 +260,7 @@ elif [[ "$TERM" =~ "dumb|emacs" ]]; then
   unset RPROMPT
   export PROMPT="X> "
 else
-  export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
+  # export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
 fi
 
 if [[ "$SHLVL" -le 1 ]]; then
@@ -271,11 +271,9 @@ if [[ "$SHLVL" -le 1 ]]; then
     startx
   fi
   if hash gpg-agent >/dev/null; then
-    export GPG_FILE=~/.gpg-env
-    if [[ "$(p gpg-agent | wc -l)" -lt 2 ]]; then
-      gpg-agent --daemon --allow-preset-passphrase --write-env-file "$GPG_FILE"
+    if [[ "$(p gpg-agent | wc -l)" -lt 1 ]]; then
+      gpg-agent --daemon --allow-preset-passphrase
     fi
-    source "$GPG_FILE"
     export GPG_AGENT_INFO
   fi
 fi

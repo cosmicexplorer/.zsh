@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 sub toTitleCase {
   $_[0] =~ s/(\w)(.+)/uc($1) . lc($2)/re;

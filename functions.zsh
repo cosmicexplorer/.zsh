@@ -329,3 +329,62 @@ function with-pushd {
     && "${argv[@]}" \
     && popd
 }
+
+# Convert line-delimited output into a :-delimited path (e.g. for PATH or JVM classpaths).
+function merge_jars() {
+  tr '\n' ':' | sed -re 's#:$##g'
+}
+
+function zlib-decompress {
+  perl -MCompress::Zlib -e 'undef $/; print uncompress(<>)'
+}
+
+function intersect-files {
+  diff --old-line-format= --new-line-format= --unchanged-line-format='%L' "$@"
+}
+
+function as-editable-script {
+  local -r script="$1"
+  local -a rest=( "${@:2}" )
+
+  local -r tmp_script="$(mktemp)"
+  trap 'rm -fv "$tmp_script"' EXIT
+
+  cp -v "$script" "$tmp_script"
+  chmod u+x "$tmp_script"
+  "$tmp_script" "$rest[@]"
+}
+
+function go {
+  pushd "$1" \
+    && trap 'popd' EXIT \
+    && "${@:2}"
+}
+
+function with-file-on-path-as {
+  local -r exe="$1"
+  local -r desired_exe_name="$2"
+  local -ra cmd=( "${@:3}" )
+
+  local -r tmp_path_entry="$(mktemp -d)"
+  trap 'rm -fv "$tmp_path_entry"' EXIT
+
+  cp -v "$exe" "${tmp_path_entry}/${desired_exe_name}"
+  PATH="${tmp_path_entry}:${PATH}" "$cmd[@]"
+}
+
+function kk {
+  p "$@" | awk '{print $2}' | parallel -t kill -9
+}
+
+function kk-root {
+  p "$@" | awk '{print $2}' | parallel -t sudo kill -9
+}
+
+function c {
+  curl -L --fail "$@"
+}
+
+function git-fast-status {
+  time PAGER=cat git diff --name-only
+}
