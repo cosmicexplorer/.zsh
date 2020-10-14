@@ -278,7 +278,7 @@ if [[ "$SHLVL" -le 1 ]]; then
   fi
 fi
 
-if hash emacsclient >/dev/null; then
+if hash emacsclient 2>/dev/null; then
   export EDITOR="emacsclient"
 fi
 export VISUAL="$EDITOR"
