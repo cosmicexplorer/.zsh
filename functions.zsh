@@ -388,3 +388,19 @@ function c {
 function git-fast-status {
   time PAGER=cat git diff --name-only
 }
+
+function process-not-running {
+  [[ "$(p "$1" | wc -l)" -lt 1 ]]
+}
+
+function command-exists {
+  hash "$1" 2>/dev/null
+}
+
+function command-exists-and-not-running {
+  command-exists "$1" && process-not-running "$1"
+}
+
+function is-osx {
+  uname -a | grep -P '^Darwin' >/dev/null
+}

@@ -26,10 +26,10 @@ function use_pacman {
   pacman -Ss --color always "$cmd" | "$ZSH_DIR/group_results.pl"
 }
 
-function use_yaourt {
+function use_yay {
   local -r cmd="$1"
   echo -e "\033[1;33msearching pacman repositories and AUR...\033[1;0m"
-  yaourt -Ss --color "$cmd" | "$ZSH_DIR/group_results.pl"
+  yay -Ss --color "$cmd" | "$ZSH_DIR/group_results.pl"
 }
 
 function use_apt {
@@ -55,8 +55,8 @@ elif hash python3 2>/dev/null && \
   export CMD_NOT_FOUND_HANDLER=use_cmd_not_found
 fi
 
-if hash yaourt 2>/dev/null; then
-  export PACKAGE_SEARCH_HANDLER=use_yaourt
+if hash yay 2>/dev/null; then
+  export PACKAGE_SEARCH_HANDLER=use_yay
 elif hash pacman 2>/dev/null; then
   export PACKAGE_SEARCH_HANDLER=use_pacman
 elif hash apt-cache 2>/dev/null; then

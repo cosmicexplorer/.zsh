@@ -57,7 +57,7 @@ alias ek='emacs-kill-processes'
 
 # TODO: \t
 
-alias 'suvim'='sudo vim -u $HOME/.vimrc'
+alias 'suvim'='sudo vim -u $HOME/.vimrc --cmd "set runtimepath=$HOME/.vim"'
 
 # close R without prompting to save worksprace
 alias 'R'='R --no-save'
@@ -78,9 +78,9 @@ alias 'update-grub'='grub-mkconfig -o /boot/grub/grub.cfg'
 # ipython
 alias 'ipython_start'='nohup ipython notebook &'
 
-if hash yaourt 2>/dev/null; then
+if hash yay 2>/dev/null; then
   function y {
-    yaourt --noconfirm $@
+    yay --noconfirm $@
   }
 fi
 

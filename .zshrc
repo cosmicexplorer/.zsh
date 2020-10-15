@@ -267,19 +267,17 @@ if [[ "$SHLVL" -le 1 ]]; then
   if [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
     export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
   fi
-  if hash startx 2>/dev/null && ! (uname -a | grep -P '^Darwin' >/dev/null); then
+  if command-exists-and-not-running startx && ! is-osx; then
     startx
   fi
-  if hash gpg-agent >/dev/null; then
-    if [[ "$(p gpg-agent | wc -l)" -lt 1 ]]; then
-      gpg-agent --daemon --allow-preset-passphrase
-    fi
-    export GPG_AGENT_INFO
+  if command-exists-and-not-running gpg-agent; then
+    gpg-agent --daemon --allow-emacs-pinentry
   fi
 fi
 
-if hash emacsclient 2>/dev/null; then
+if command-exists emacsclient; then
   export EDITOR="emacsclient"
+  export GIT_EDITOR="emacsclient"
 fi
 export VISUAL="$EDITOR"
 
