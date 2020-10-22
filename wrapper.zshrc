@@ -78,4 +78,4 @@ if load_sources "${startup_order[@]}"; then
   return 0
 else
   return 1
-fi
+fi | log-info-if-tty
