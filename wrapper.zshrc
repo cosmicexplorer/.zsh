@@ -6,7 +6,7 @@ export ZSH_DIR="$HOME/.zsh"
 # when a script doesn't load correctly!
 source "$ZSH_DIR/colors.zsh"
 
-set -euo pipefail
+set -o pipefail
 
 declare debug_init_log="$ZSH_DIR/.zsh-init-debug.log"
 
@@ -35,9 +35,9 @@ declare -ga startup_order=(
   aliases
 )
 declare -ga source_files=(
-  ~/.local.zsh
-  ~/.zsh/.zshrc
-  ~/.zsh/aliases.zsh
+  "$HOME/.local.zsh"
+  "$HOME/.zsh/.zshrc"
+  "$HOME/.zsh/aliases.zsh"
 )
 if [[ "${#startup_order[@]}" -ne "${#source_files[@]}" ]]; then
   fail-from-stdin <<EOF
@@ -49,33 +49,21 @@ $(yellow ${(F)source_files[@]})
 EOF
 fi
 
-function load_sources {
-  for type; do
-    dark_gray 'Loading '
-    yellow "$type"
-    dark_gray '...'
-    # We only send stderr output to the logfile, since sometimes we want the ability to
-    # interact with our zsh setup scripts (e.g. to set up CPAN on a new machine).
-    # TODO: `source` does NOT fail when an individual line errors, and just returns the code of the
-    # last line of the script!!! Abhorrent!!!
-    local source_file="${source_files[${startup_order[(i)$type]}]}"
-    # NB: If the source file doesn't exist, it will *actually* fail at least.
-    if ! source "$source_file" 2>>(tee-to-debug-log); then
-      fail-from-stdin <<EOF
-Failed to load $source_file for phase $type! Please check $(readlink -f $debug_init_log) for details.
-EOF
-    else
-      light_green 'success'
-      light_gray '!\n'
-    fi
-  done
-}
-
 # Pass in the associative array as a flattened list composed of key-value pairs, each separated by
 # a space.
-if load_sources "${startup_order[@]}"; then
-  set +euo pipefail
-  return 0
-else
-  return 1
-fi | log-info-if-tty
+# NB: We unfortunately have to pass in each and every one of these `| log-info-if-tty` pipelines
+# each time, because otherwise zsh will literally just drop the `source` line and do it in a
+# subshell (atrocious).
+for script_type in "${startup_order[@]}"; do
+  dark_gray 'Loading ' | log-info-if-tty
+  yellow "$script_type" | log-info-if-tty
+  dark_gray '...' | log-info-if-tty
+  # We only send stderr output to the logfile, since sometimes we want the ability to
+  # interact with our zsh setup scripts (e.g. to set up CPAN on a new machine).
+  # TODO: `source` does NOT fail when an individual line errors, and just returns the code of the
+  # last line of the script!!! Abhorrent!!!
+  local source_file="${source_files[${startup_order[(i)$script_type]}]}"
+  source "$source_file" || return 1
+  light_green 'success' | log-info-if-tty
+  light_gray '!\n' | log-info-if-tty
+done
