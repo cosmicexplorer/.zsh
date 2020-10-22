@@ -23,13 +23,13 @@ declare -rgA ANSI_KNOWN_COLORS=(
 
 function with-color {
   local -r color_name="$1"
-  local -r text="$2"
+  local -ra text=( "${@:2}" )
   local -r color_code="$ANSI_KNOWN_COLORS[$color_name]"
   local -r encoded_text="$(printf '%s' \
     "$ANSI_COLOR_START" \
     "$color_code" \
     "$ANSI_COLOR_END_DELIMITER" \
-    "$text" \
+    "${(j: :)text[@]}" \
     "$ANSI_COLOR_START" \
     "$ANSI_COLOR_STOP" \
     "$ANSI_COLOR_END_DELIMITER")"
@@ -37,50 +37,50 @@ function with-color {
 }
 
 function black {
-  with-color 'black' "$1"
+  with-color 'black' "$@"
 }
 function blue {
-  with-color 'blue' "$1"
+  with-color 'blue' "$@"
 }
 function green {
-  with-color 'green' "$1"
+  with-color 'green' "$@"
 }
 function cyan {
-  with-color 'cyan' "$1"
+  with-color 'cyan' "$@"
 }
 function red {
-  with-color 'red' "$1"
+  with-color 'red' "$@"
 }
 function purple {
-  with-color 'purple' "$1"
+  with-color 'purple' "$@"
 }
 function brown {
-  with-color 'brown' "$1"
+  with-color 'brown' "$@"
 }
 function light_gray {
-  with-color 'light_gray' "$1"
+  with-color 'light_gray' "$@"
 }
 function dark_gray {
-  with-color 'dark_gray' "$1"
+  with-color 'dark_gray' "$@"
 }
 function light_blue {
-  with-color 'light_blue' "$1"
+  with-color 'light_blue' "$@"
 }
 function light_green {
-  with-color 'light_green' "$1"
+  with-color 'light_green' "$@"
 }
 function light_cyan {
-  with-color 'light_cyan' "$1"
+  with-color 'light_cyan' "$@"
 }
 function light_red {
-  with-color 'light_red' "$1"
+  with-color 'light_red' "$@"
 }
 function light_purple {
-  with-color 'light_purple' "$1"
+  with-color 'light_purple' "$@"
 }
 function yellow {
-  with-color 'yellow' "$1"
+  with-color 'yellow' "$@"
 }
 function white {
-  with-color 'white' "$1"
+  with-color 'white' "$@"
 }
