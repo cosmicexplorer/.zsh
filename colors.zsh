@@ -1,8 +1,8 @@
-declare -rg ANSI_COLOR_START="\\033["
-declare -rg ANSI_COLOR_END_DELIMITER="m"
-declare -rg ANSI_COLOR_STOP="0"
+declare -g ANSI_COLOR_START="\\033["
+declare -g ANSI_COLOR_END_DELIMITER="m"
+declare -g ANSI_COLOR_STOP="0"
 
-declare -rgA ANSI_KNOWN_COLORS=(
+declare -gA ANSI_KNOWN_COLORS=(
   [black]='0;30'
   [blue]='0;34'
   [green]='0;32'
@@ -22,10 +22,10 @@ declare -rgA ANSI_KNOWN_COLORS=(
 )
 
 function with-color {
-  local -r color_name="$1"
-  local -ra text=( "${@:2}" )
-  local -r color_code="$ANSI_KNOWN_COLORS[$color_name]"
-  local -r encoded_text="$(printf '%s' \
+  local color_name="$1"
+  local -a text=( "${@:2}" )
+  local color_code="$ANSI_KNOWN_COLORS[$color_name]"
+  local encoded_text="$(printf '%s' \
     "$ANSI_COLOR_START" \
     "$color_code" \
     "$ANSI_COLOR_END_DELIMITER" \
