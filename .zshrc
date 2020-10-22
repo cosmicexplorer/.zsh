@@ -1,14 +1,19 @@
-# defining $ZSH_DIR makes sourcing other files easy -- see this link for details
-# https://stackoverflow.com/questions/9901210/bash-source0-equivalent-in-zsh
-local -r this_file="${(%):-%x}"
-export ZSH_DIR="$(dirname "$this_file")"
-
 autoload colors; colors
 autoload -Uz compinit; compinit
 autoload -Uz promptinit; promptinit
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
+
+### New things I've just learned from `man zshoptions`!
+# unsetopt AUTO_CD # Don't cd into a directory if I don't realize a program is actually a dir!
+# setopt AUTO_PUSHD # All cd is now pushd!!!
+# setopt EQUALS # =gcc becomes "$(which gcc)"!
+# setopt NOMATCH
+# setopt BAD_PATTERN
+# setopt BRACE_CCL
+# setopt CASE_GLOB
+# setopt CASE_MATCH
 
 ### Tab completion
 
@@ -148,7 +153,7 @@ function title {
   # whether I'm using SSH right now! So just assume I'm local iff I'm not
   # running over SSH *and* not using screen. Local screens are fairly rare.
   prefix=$HOST
-  if [[ $SSH_CONNECTION == '' && $TERM != "screen"* ]]; then
+  if [[ "${SSH_CONNECTION:-}" == '' && $TERM != "screen"* ]]; then
     prefix=''
   fi
   # Wrap it in brackets
@@ -275,11 +280,26 @@ if [[ "$SHLVL" -le 1 ]]; then
   fi
 fi
 
-if command-exists emacsclient; then
-  export EDITOR="emacsclient"
-  export GIT_EDITOR="emacsclient"
+typeset -gra preferred_editors=(
+  emacsclient
+  vim
+  nano
+)
+
+function available-editors {
+  for editor; do
+    command-exists "$editor" \
+      && echo "$editor"
+  done
+}
+
+local -r editor="$(available-editors "${preferred_editors[@]}" | head -n1)"
+
+if [[ -n "$editor" ]]; then
+  export EDITOR="$editor"
+  export GIT_EDITOR="$editor"
+  export VISUAL="$editor"
 fi
-export VISUAL="$EDITOR"
 
 if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
   source "$ZSH_DIR/.zshbashpaths"

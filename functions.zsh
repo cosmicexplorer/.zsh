@@ -1,11 +1,20 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+function args-as-lines {
+  printf '%s\n' $@
+}
+
 function printfmt {
   printf "$1\n" ${@:2}
 }
 
 function err {
   cat $@ >&2
+}
+
+function die {
+  err $@
+  exit 1
 }
 
 function get-last-arg {
@@ -138,6 +147,7 @@ function find-grep {
     grep-default $grepPattern "$line"
   done
 }
+
 function grep-with-depth {
   find-grep . -maxdepth "$1" -type f "$2"
 }

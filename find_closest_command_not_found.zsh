@@ -100,5 +100,8 @@ function get_cmd_alternatives {
 
 function command_not_found_handler {
   local -r cmd="$1"
-  get_cmd_alternatives "$cmd" | truncate_completions "$cmd"
+  get_cmd_alternatives "$cmd" \
+    | truncate_completions "$cmd" \
+                           >&2
+  return 1
 }
