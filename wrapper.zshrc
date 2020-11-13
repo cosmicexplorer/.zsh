@@ -10,9 +10,12 @@ set -o pipefail
 
 declare debug_init_log="$ZSH_DIR/.zsh-init-debug.log"
 
-local tty_exit_code="$(tty -s ; echo "$?")"
+function non-tty-or-emacs {
+  tty -s && [[ ! -v INSIDE_EMACS ]]
+}
+local tty_ish_exit_code="$(non-tty-or-emacs ; echo "$?")"
 function log-info-if-tty {
-  if [[ "$tty_exit_code" -eq 0 ]]; then
+  if [[ "$tty_ish_exit_code" -eq 0 ]]; then
     cat >&2
   else
     cat &>> "$debug_init_log"
@@ -29,15 +32,31 @@ function fail-from-stdin {
 }
 
 # EXTREMELY surprisingly, in zshparam(1), it is revealed that associative arrays have no order.
+# FIXME: no inline comments in arrays!!! but also allow more official rust/(coffeescript)-like docstrings, e.g.:
+###
+#
+#*find_closest_command_not_found.zsh:*
+#- add command recognition i.e. "did you mean <x>?"
+#  - like ubuntu's command-not-found module
+#
+###
 declare -ga startup_order=(
   paths
+  setup_editor
+  local_config
   full_setup
   aliases
+  env_parallel
+  find_closest_command
 )
 declare -ga source_files=(
+  "$HOME/.zsh/paths.zsh"
+  "$HOME/.zsh/setup-editor.zsh"
   "$HOME/.local.zsh"
   "$HOME/.zsh/.zshrc"
   "$HOME/.zsh/aliases.zsh"
+  "$HOME/.zsh/parallel_wrapper.zsh"
+  "$HOME/.zsh/find_closest_command_not_found.zsh"
 )
 if [[ "${#startup_order[@]}" -ne "${#source_files[@]}" ]]; then
   fail-from-stdin <<EOF
@@ -55,7 +74,7 @@ fi
 # each time, because otherwise zsh will literally just drop the `source` line and do it in a
 # subshell (atrocious).
 for script_type in "${startup_order[@]}"; do
-  dark_gray 'Loading ' | log-info-if-tty
+  dark_gray '# Loading ' | log-info-if-tty
   yellow "$script_type" | log-info-if-tty
   dark_gray '...' | log-info-if-tty
   # We only send stderr output to the logfile, since sometimes we want the ability to

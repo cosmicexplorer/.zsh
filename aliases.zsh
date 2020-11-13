@@ -1,5 +1,8 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
+# HAHAHAHAHAHAHAHAHAAHAHAHAGH
+alias cd=pushd
+
 source "${ZSH_DIR}/functions.zsh"
 
 alias 'l'='ls'
@@ -60,17 +63,11 @@ alias ek='emacs-kill-processes'
 alias 'suvim'='sudo vim -u $HOME/.vimrc --cmd "set runtimepath=$HOME/.vim"'
 
 # close R without prompting to save worksprace
-alias 'R'='R --no-save'
+rlwrap-command-alias R --no-save
 
 # sbcl /needs/ readline
-if hash rlwrap 2>/dev/null; then
-  if hash sbcl 2>/dev/null; then
-    alias 'sbcl'='rlwrap sbcl'
-  fi
-  if hash ocaml 2>/dev/null; then
-    alias 'ocaml'='rlwrap ocaml'
-  fi
-fi
+rlwrap-command-alias sbcl
+rlwrap-command-alias ocaml
 
 # arch grub doesn't have this
 alias 'update-grub'='grub-mkconfig -o /boot/grub/grub.cfg'
@@ -100,3 +97,5 @@ function gh-ssh {
   local -ra rest=("${@:2}")
   git clone "git@github.com:${GH_USERNAME}/${repo}" "${rest[@]}"
 }
+
+alias gb='git branch'

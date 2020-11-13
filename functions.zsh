@@ -9,11 +9,18 @@ function printfmt {
 }
 
 function err {
-  cat $@ >&2
+  if [[ "$#" -ne 0 ]]; then
+    echo '# ' $@ >&2
+  fi
 }
 
 function die {
   err $@
+  exit 1
+}
+
+function spew {
+  cat >&2
   exit 1
 }
 
@@ -236,42 +243,6 @@ function null {
   cat /dev/null
 }
 
-function valid-ssh-agent-p {
-  [[ -v SSH_AUTH_SOCK && -S "$SSH_AUTH_SOCK" ]] && \
-    ( [[ -v SSH_AGENT_PID ]] && kill -0 "$SSH_AGENT_PID" 2>/dev/null )
-}
-
-export SSHPASS_FILE="$ZSH_DIR/.sshpass"
-
-function make-ssh-agent {
-  local -r auth_path="$1"
-  ( [[ -f "$auth_path" ]] || ssh-agent -s > "$auth_path" ) && \
-    source "$auth_path" >/dev/null
-}
-
-function add-ssh {
-  local -r auth_path="$1"
-  if [[ -f "$auth_path" ]]; then
-    export SSH_ASKPASS="$ZSH_DIR/read-ssh-pass.sh"
-    DISPLAY=":0" ssh-add <"$auth_path"
-  else
-    ssh-add
-  fi 2>/dev/null
-}
-
-export SSH_PW_FILE="$ZSH_DIR/.ssh_pw"
-
-function setup-ssh-agent {
-  if valid-ssh-agent-p; then return 0; fi
-  if ! exec-find ssh-agent ssh-add >/dev/null; then return 1; fi
-  make-ssh-agent "$SSHPASS_FILE"
-  if ! valid-ssh-agent-p; then
-    rm "$SSHPASS_FILE"
-    make-ssh-agent "$SSHPASS_FILE"
-  fi
-  add-ssh "$SSH_PW_FILE"
-}
-
 function silent-on-success {
   local -ra cmd=( "$@" )
   local -r tmpdir="$(mktemp -d)"
@@ -407,10 +378,111 @@ function command-exists {
   hash "$1" 2>/dev/null
 }
 
+function cmd-rc {
+  "$@" >&2
+  echo "$?"
+}
+
+function command-MUST-exist {
+  local -r cmd="$1"
+  local -r exists="$(cmd-rc command-exists "$cmd")"
+  if [[ "$exists" -ne 0 ]]; then
+    err "command '$cmd' is REQUIRED for $exists."
+    if [[ -v "$exists" ]]; then
+      # `which` prints out what the function actually is.
+      which "$exists"
+    fi
+    exit 1
+  fi
+}
+
+function rlwrap-command-alias {
+  local -r subcommand="$1"
+  local -ra args=( "${@:2}" )
+  if command-exists rlwrap && command-exists "$subcommand"; then
+    alias "$subcommand"="rlwrap $subcommand ${args[@]}"
+  elif command-exists "$subcommand"; then
+    alias "$subcommand"="$subcommand ${args[@]}"
+  fi
+}
+
 function command-exists-and-not-running {
   command-exists "$1" && process-not-running "$1"
 }
 
-function is-osx {
+function non-darwin-uname-a {
   uname -a | grep -P '^Darwin' >/dev/null
+}
+
+function is-osx {
+  with-set-x non-darwin-uname-a
+}
+
+function with-set-x {
+  set -x
+  # zsh -i -c "$@"
+  "$@"
+  set +x
+}
+
+function p@ {
+  with-set-x \
+    ping -c "${1:-3}" "${2:-8.8.8.8}"
+}
+command-MUST-exist ping p@
+
+declare -gxa PARALLEL_ARGS=( ${PARALLEL_ARGS[@]:-} )
+# TODO: This _ARGS / etc configuration should be a generalization like pants options.
+function filter {
+  # TODO: It would be really nice to be able to add command line arguments to single processes in
+  # deeply-nested pipelines, *without* requiring each executable to implement their own set of env
+  # vars to control their behavior.
+  # *Solution:*
+  #   - Allow /individual functions/ to declare config vars/expansion points.
+  #     - E.g. This method could have allowed selecting the shell `sh`, or where to point `echo` to.
+  #       - /(The above two are horrible examples, since this `filter` operation is expected to be
+  #       super low-level)/.
+  #   - We can lift up function argument parsing to be the *exact same implementation* as parsing
+  #     executables CLIs (with sbang).
+  # TODO: hygeinically joining lines!!! Wow!!!!
+  local -ra cmd=( "$@" )
+  parallel "${PARALLEL_ARGS[@]}" -L1 "( ${cmd[@]} ) && echo >&2 '{}'"
+}
+command-MUST-exist parallel filter
+
+# TODO: This function isn't useful because (currently) we don't pass down any shell environment to
+# `parallel`.
+function executable-file-p {
+  [[ -f "$1" ]] && [[ -x "$1" ]]
+}
+# TODO: `@featurep [[ -x ]]` is a *really* nice way of stating whatever works on a shell where the
+# builtin `[[...]]` has the `-x` check.
+
+function locate-executable-files {
+  local -r executable_filename="$1"
+  # TODO: some type-safe way to ensure we've escaped `executable_filename` before injecting it into
+  # grep -E! Could a solution with -P be more portable?
+  # locate "${executable_filename}" \
+  #   | grep -E "/${executable_filename}\$" \
+  #   | with-set-x filter executable-file-p "${executable_filename}"
+  # TODO: `filter executable-file-p` is failing because the `parallel` invocation inside of `filter`
+  # can't access the defintion of the shell function!
+  # TODO: `env_parallel` exists, but what if we could avoid having a daemon by using `whence -f`??
+  # TODO: !!!!!! what if we created a generalized IR between shells among the vein of `whence -f` is a
+  # compat adapter between all shells!!!!!!!
+  #   - for now, we have a working replacement (an inline function definition with the name 'f'.
+  locate "${executable_filename}" \
+    | grep -E "/${executable_filename}\$" \
+    | filter "[[ -f "$1" ]] && [[ -x "$1" ]] && echo '{}'"
+}
+command-MUST-exist locate locate-executable-files
+
+function find-executable-files {
+  local -r executable_filename="$1"
+  local -r d="${2}"
+  local -ra find_args=( "${@:3}" )
+  find "$d" \
+    -iname "$executable_filename" \
+    -executable "${find_args[@]}" \
+    | filter executable-file-p "${executable_filename}"
 }

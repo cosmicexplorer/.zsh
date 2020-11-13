@@ -74,16 +74,21 @@ REPORTTIME=2
 
 ### Prompt
 
+# Stolen from @thingskatedid on Twitter, a hack so that you can actually copy/paste terminal output!
+export _BASE_PROMPT=';'
+# Now extending the idea.
+export COMMENT_START='# '
+
 # %(!.☭.⚘)
 
 RPROMPT_code="%(?..\$? %{$fg_no_bold[red]%}%?%{$reset_color%} )"
 RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
 RPROMPT_time="%{$fg_no_bold[yellow]%}%*%{$reset_color%}"
 # export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
-# %{$fg_bold[blue]%}%~%{$reset_color%}${_newline}X> "
-export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
+# %{$fg_bold[blue]%}%~%{$reset_color%}${_newline}${_BASE_PROMPT} "
+export PROMPT="%{%F{white}%}${COMMENT_START}%{$reset_color%}%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
 %{$fg_bold[blue]%}%~%{$reset_color%} $RPROMPT_time $RPROMPT_code$RPROMPT_jobs
-%{$fg_bold[cyan]%}X>%{$reset_color%} "
+%{$fg_bold[cyan]%}${_BASE_PROMPT}%{$reset_color%} "
 #☭%(!.☭.>) "
 
 ### Misc aliases
@@ -103,6 +108,11 @@ source "${ZSH_DIR}/aliases.zsh"
 
 source "${ZSH_DIR}/git_wrapper.zsh"
 source "${ZSH_DIR}/pants_wrapper.zsh"
+
+source "${ZSH_DIR}/gpg.zsh"
+source "${ZSH_DIR}/ssh.zsh"
+source "${ZSH_DIR}/x.zsh"
+
 
 ### ls
 
@@ -247,60 +257,4 @@ if [ -d "$SNIPPETS_DIR/.git" ]; then
   popd
 fi
 
-source "$ZSH_DIR/paths.zsh"
-
-# add command recognition i.e. "did you mean <x>?"
-# like in ubuntu's command-not-found module
-source "$ZSH_DIR/find_closest_command_not_found.zsh"
-
 set +o histexpand
-
-export ORIG_TERM="$TERM"
-export COMPAT_TERM='xterm-256color'
-if ! [[ -v TERM ]]; then
-  echo "no TERM! exiting..."
-  exit 1
-elif [[ "$TERM" =~ "dumb|emacs" ]]; then
-  export TERM="${COMPAT_TERM}"
-  unset RPROMPT
-  export PROMPT="X> "
-else
-  # export RPROMPT="$RPROMPT_code$RPROMPT_jobs$RPROMPT_time"
-fi
-
-if [[ "$SHLVL" -le 1 ]]; then
-  if [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
-    export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
-  fi
-  if command-exists-and-not-running startx && ! is-osx; then
-    startx
-  fi
-  if command-exists-and-not-running gpg-agent; then
-    gpg-agent --daemon --allow-emacs-pinentry
-  fi
-fi
-
-typeset -gra preferred_editors=(
-  emacsclient
-  vim
-  nano
-)
-
-function available-editors {
-  for editor; do
-    command-exists "$editor" \
-      && echo "$editor"
-  done
-}
-
-local -r editor="$(available-editors "${preferred_editors[@]}" | head -n1)"
-
-if [[ -n "$editor" ]]; then
-  export EDITOR="$editor"
-  export GIT_EDITOR="$editor"
-  export VISUAL="$editor"
-fi
-
-if [ -f "$ZSH_DIR/.zshbashpaths" ]; then
-  source "$ZSH_DIR/.zshbashpaths"
-fi
