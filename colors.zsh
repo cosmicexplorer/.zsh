@@ -21,19 +21,28 @@ declare -gA ANSI_KNOWN_COLORS=(
   [white]='1;37'
 )
 
-function with-color {
-  local color_name="$1"
-  local -a text=( "${@:2}" )
-  local color_code="$ANSI_KNOWN_COLORS[$color_name]"
-  local encoded_text="$(printf '%s' \
+function color-start {
+  local -r color_name="$1"
+  local -r color_code="$ANSI_KNOWN_COLORS[$color_name]"
+  printf '%b' \
     "$ANSI_COLOR_START" \
     "$color_code" \
-    "$ANSI_COLOR_END_DELIMITER" \
-    "${(j: :)text[@]}" \
+    "$ANSI_COLOR_END_DELIMITER"
+}
+
+function color-end {
+  printf '%b' \
     "$ANSI_COLOR_START" \
     "$ANSI_COLOR_STOP" \
-    "$ANSI_COLOR_END_DELIMITER")"
-  echo -n "$encoded_text"
+    "$ANSI_COLOR_END_DELIMITER"
+}
+
+function with-color {
+  local -r color_name="$1"
+  local -ra text=( "${@:2}" )
+  color-start "$color_name"
+  printf '%b' "${(j: :)text[@]}"
+  color-end
 }
 
 function black {

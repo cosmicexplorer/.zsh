@@ -113,7 +113,6 @@ source "${ZSH_DIR}/gpg.zsh"
 source "${ZSH_DIR}/ssh.zsh"
 source "${ZSH_DIR}/x.zsh"
 
-
 ### ls
 
 # long mode, show all, natural sort, type squiggles, friendly sizes

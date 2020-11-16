@@ -11,7 +11,7 @@ function select-editors {
   done
 }
 
-# "$(select-editors "${PREFERRED_EDITORS[@]}" | head -n1)"
+# select-editors >&2 "${PREFERRED_EDITORS[@]}"
 
 function display-known-editors {
   cat <<EOF
@@ -31,7 +31,7 @@ function make-editor-selection-global {
     return 0
   fi
 
-  if true (${${(M)PREFERRED_EDITORS[@]:#${editor}}:?'Unknown editor'}) ; then
+  if (echo -n ${${(M)PREFERRED_EDITORS[@]:#${editor}}:?'Unknown editor'}) ; then
     export EDITOR="$editor"
     export GIT_EDITOR="$editor"
     export VISUAL="$editor"
@@ -39,3 +39,6 @@ function make-editor-selection-global {
     die "Editor ${editor} was not recognized."
   fi
 }
+
+readonly -a editors=( $(select-editors "${PREFERRED_EDITORS[@]}") )
+make-editor-selection-global "${editors[@]}"

@@ -40,23 +40,28 @@ function fail-from-stdin {
 #  - like ubuntu's command-not-found module
 #
 ###
+# TODO: we want to call the "main function"  of setup-editor.zsh, but we can't do that without doing
+# it at  the top level, in  the file itself!  And we want  `source` to avoid modifying  anything but
+# definitions. So here:
+# (1) Interface definitions for modules.
+# (2) Make that interface have a "main function" so we can *separate sourcing and startup!*
 declare -ga startup_order=(
   paths
-  setup_editor
   local_config
   full_setup
   aliases
   env_parallel
   find_closest_command
+  setup_editor
 )
 declare -ga source_files=(
   "$HOME/.zsh/paths.zsh"
-  "$HOME/.zsh/setup-editor.zsh"
   "$HOME/.local.zsh"
   "$HOME/.zsh/.zshrc"
   "$HOME/.zsh/aliases.zsh"
   "$HOME/.zsh/parallel_wrapper.zsh"
   "$HOME/.zsh/find_closest_command_not_found.zsh"
+  "$HOME/.zsh/setup-editor.zsh"
 )
 if [[ "${#startup_order[@]}" -ne "${#source_files[@]}" ]]; then
   fail-from-stdin <<EOF
@@ -82,7 +87,9 @@ for script_type in "${startup_order[@]}"; do
   # TODO: `source` does NOT fail when an individual line errors, and just returns the code of the
   # last line of the script!!! Abhorrent!!!
   local source_file="${source_files[${startup_order[(i)$script_type]}]}"
-  source "$source_file" || return 1
+  color-start purple
+  source "$source_file" || (color-end ; return 1)
+  color-end
   light_green 'success' | log-info-if-tty
   light_gray '!\n' | log-info-if-tty
 done
