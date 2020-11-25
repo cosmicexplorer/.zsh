@@ -53,6 +53,7 @@ declare -ga startup_order=(
   env_parallel
   find_closest_command
   setup_editor
+  paths
 )
 declare -ga source_files=(
   "$HOME/.zsh/paths.zsh"
@@ -62,6 +63,7 @@ declare -ga source_files=(
   "$HOME/.zsh/parallel_wrapper.zsh"
   "$HOME/.zsh/find_closest_command_not_found.zsh"
   "$HOME/.zsh/setup-editor.zsh"
+  "$HOME/.zsh/paths.zsh"
 )
 if [[ "${#startup_order[@]}" -ne "${#source_files[@]}" ]]; then
   fail-from-stdin <<EOF

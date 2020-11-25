@@ -486,3 +486,18 @@ function find-executable-files {
     -executable "${find_args[@]}" \
     | filter executable-file-p "${executable_filename}"
 }
+
+function extend_path_var {
+  local -r varname="$1"
+  local -ra new_entries=( "${@:2}" )
+
+  if [[ "${#new_entries[@]}" -eq 0 ]]; then
+    local -r entries_string=''
+  else
+    local -r entries_string="${(j/:/)new_entries[@]}"
+  fi
+  # This is prefixed with a ':', if non-empty, otherwise no ':' is inserted.
+  local -r var_expansion_string="${${${(P)varname}:+:${(P)varname}}:-}"
+
+  echo "${entries_string}${var_expansion_string}"
+}
