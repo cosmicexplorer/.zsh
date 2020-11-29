@@ -32,3 +32,7 @@ fi
 if has-exec javac; then
   export JAVA_HOME="$(readlink -f "$(exec-find javac)" | sed -re 's#/bin/javac##g')"
 fi
+
+if [[ -f "${ZSH_DIR}/.zshbashpaths" ]]; then
+  source "${ZSH_DIR}/.zshbashpaths"
+fi

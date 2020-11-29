@@ -21,7 +21,6 @@ function die {
 
 function spew {
   cat >&2
-  exit 1
 }
 
 function get-last-arg {

@@ -8,6 +8,7 @@ source "${ZSH_DIR}/functions.zsh"
 function setup-gpg-agent-idempotent {
   export GPG_TTY="$(tty)"
   if command-exists-and-not-running gpg-agent; then
-    gpg-agent --daemon
+    gpg-agent --daemon \
+      || return 0
   fi
 }
