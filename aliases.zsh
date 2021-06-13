@@ -77,7 +77,7 @@ alias 'ipython_start'='nohup ipython notebook &'
 
 if hash yay 2>/dev/null; then
   function y {
-    yay --noconfirm $@
+    yay --noconfirm --overwrite '*' $@
   }
 fi
 
