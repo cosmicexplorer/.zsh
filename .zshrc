@@ -86,6 +86,7 @@ RPROMPT_jobs="%1(j.%%# %{$fg_no_bold[cyan]%}%j%{$reset_color%} .)"
 RPROMPT_time="%{$fg_no_bold[yellow]%}%*%{$reset_color%}"
 # export PROMPT="%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
 # %{$fg_bold[blue]%}%~%{$reset_color%}${_newline}${_BASE_PROMPT} "
+prompt default
 export PROMPT="%{%F{white}%}${COMMENT_START}%{$reset_color%}%{%(!.$fg_bold[red].$fg_bold[magenta])%}%n@%m:%{$reset_color%} \
 %{$fg_bold[blue]%}%~%{$reset_color%} $RPROMPT_time $RPROMPT_code$RPROMPT_jobs
 %{$fg_bold[cyan]%}${_BASE_PROMPT}%{$reset_color%} "
