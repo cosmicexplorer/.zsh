@@ -66,7 +66,7 @@ function sep {
 }
 
 function g {
-  grep -nHiP --color=auto --binary-files=without-match $@
+  grep -nHiE --color=auto --binary-files=without-match $@
 }
 # recursive
 function gr {
@@ -75,7 +75,7 @@ function gr {
 
 # ps is cool too
 function p {
-  ps aux | grep -vP '\bgrep\b' | grep -iP --color=auto --binary-files=without-match $@
+  ps aux | grep -vE '\bgrep\b' | grep -iE --color=auto --binary-files=without-match $@
 }
 function ptree {
   ps auxf $@
@@ -277,7 +277,7 @@ function all-found-p {
     if [[ "$const" =~ ^([^=]+)=([^=]+)$ ]]; then
       local ident="${match[1]}" typespec="${match[2]}"
       local pat="$(printf "^%s:[[:space:]]+%s" "$ident" "$typespec")"
-      if ! whence -wa "$ident" | grep -Pq "$pat"; then
+      if ! whence -wa "$ident" | grep -Eq "$pat"; then
         printf "identifier '%s' of type '%s' could not be found\n" \
                "$ident" "$typespec" >&2
         return 1
@@ -410,7 +410,7 @@ function command-exists-and-not-running {
 }
 
 function non-darwin-uname-a {
-  uname -a | grep -P '^Darwin' >/dev/null
+  uname -a | grep -E '^Darwin' >/dev/null
 }
 
 function is-osx {
@@ -460,7 +460,7 @@ function executable-file-p {
 function locate-executable-files {
   local -r executable_filename="$1"
   # TODO: some type-safe way to ensure we've escaped `executable_filename` before injecting it into
-  # grep -E! Could a solution with -P be more portable?
+  # grep -E!
   # locate "${executable_filename}" \
   #   | grep -E "/${executable_filename}\$" \
   #   | with-set-x filter executable-file-p "${executable_filename}"
