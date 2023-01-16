@@ -1,7 +1,9 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
 # HAHAHAHAHAHAHAHAHAAHAHAHAGH
-alias cd=pushd
+function cd {
+  pushd "$@" >&2
+}
 
 source "${ZSH_DIR}/functions.zsh"
 
