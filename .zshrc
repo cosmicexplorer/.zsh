@@ -104,15 +104,25 @@ if [[ "$UNAME_BASE" = "MINGW" || "$UNAME_BASE" = "CYGWIN" ]]; then
   export WIN="$UNAME_BASE"
 fi
 
-# centralize aliases to single file
-source "${ZSH_DIR}/aliases.zsh"
+# load all the other scripts from this one
+source "${ZSH_DIR}/wrapper.zshrc"
 
-source "${ZSH_DIR}/git_wrapper.zsh"
-source "${ZSH_DIR}/pants_wrapper.zsh"
+declare -ga startup_order=(
+  static-paths:"${ZSH_DIR}/static-paths.zsh"
+  dynamic-paths:"${ZSH_DIR}/dynamic-paths.zsh"
+  aliases:"${ZSH_DIR}/aliases.zsh"
+  env-parallel:"${ZSH_DIR}/parallel_wrapper.zsh"
+  git-wrapper:"${ZSH_DIR}/git_wrapper.zsh"
+  pants-wrapper:"${ZSH_DIR}/pants_wrapper.zsh"
+  gpg:"${ZSH_DIR}/gpg.zsh"
+  ssh:"${ZSH_DIR}/ssh.zsh"
+  x:"${ZSH_DIR}/x.zsh"
+  find-closest-command:"${ZSH_DIR}/find_closest_command_not_found.zsh"
+  setup_editor:"${ZSH_DIR}/setup-editor.zsh"
+  local-config:"$HOME/.local.zsh"
+)
 
-source "${ZSH_DIR}/gpg.zsh"
-source "${ZSH_DIR}/ssh.zsh"
-source "${ZSH_DIR}/x.zsh"
+verbose-load-scripts "${startup_order[@]}"
 
 ### ls
 

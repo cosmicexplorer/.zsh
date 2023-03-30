@@ -5,13 +5,21 @@ export LEVENSHTEIN_CMD_DIST=4
 export LEVENSHTEIN_DEFAULT_TRUNC=16
 export LEVENSHTEIN_TRUNCATE="$LEVENSHTEIN_DEFAULT_TRUNC"
 
+export COMMAND_NOT_FOUND_PATH='/usr/lib/command-not-found'
+
 # all platforms, needs perl
 function use_leven {
   "$ZSH_DIR/levenshtein_complete.zsh" "$1"
 }
+
 # ubuntu only (or anyone)
+unset OVERRIDE_LEVEN
 function use_cmd_not_found {
-  python3 "$ZSH_DIR/command-not-found" -- "$1"
+  if [[ "${OVERRIDE_LEVEN:-}" == 'y' ]]; then
+    use_leven "$1"
+  else
+    "$COMMAND_NOT_FOUND_PATH" "$1"
+  fi
 }
 
 # very shallow check for internet connectivity so we don't wait on searching
@@ -45,14 +53,13 @@ function use_brew {
   brew search "$cmd"
 }
 
-if hash perl 2>/dev/null; then
+if [[ -x "$COMMAND_NOT_FOUND_PATH" ]]; then
+  export CMD_NOT_FOUND_HANDLER=use_cmd_not_found
+elif hash perl 2>/dev/null; then
   if ! perl -e "use Text::Levenshtein" 2>/dev/null; then
     sudo cpan "Text::Levenshtein"
   fi
   export CMD_NOT_FOUND_HANDLER=use_leven
-elif hash python3 2>/dev/null && \
-    python3 -c 'import CommandNotFound' 2>/dev/null; then
-  export CMD_NOT_FOUND_HANDLER=use_cmd_not_found
 fi
 
 if hash yay 2>/dev/null; then
@@ -77,13 +84,12 @@ function get_trunc {
 unset CMD_ALL
 function truncate_completions {
   local -r cmd="$1"
-  echo -e "\033[1;32mcommand '$cmd' not found. \
-searching for replacements...\033[1;0m"
-  if [[ -v CMD_ALL ]]; then cat
+  echo -e "\033[1;32mcommand '$cmd' not found. searching for replacements...\033[1;0m"
+  if [[ "${CMD_ALL:-}" == 'y' ]]; then cat
   else
     local -r trunc="$(get_trunc)"
     local -r sed_cmd='1,'"$trunc"'p'
-    local -r more_str="$(echo -e '\033[1;36mand more...\033[1;0m')"
+    local -r more_str="$(echo -e '\033[1;36mand more...(set CMD_ALL=y)\033[1;0m')"
     local -r sed_more="$trunc"" { i \
 $more_str
                         q }"
