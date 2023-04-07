@@ -1,5 +1,5 @@
 source "${ZSH_DIR}/functions.zsh"
-source "${ZSH_DIR}/git_wrapper.zsh"
+source "${ZSH_DIR}/git-wrapper.zsh"
 
 function with-pants-root {
   local -a argv=("$@")
