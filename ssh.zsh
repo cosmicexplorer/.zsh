@@ -39,14 +39,3 @@ function setup-ssh-agent {
   fi
   add-ssh "$SSH_PW_FILE"
 }
-
-# This  is meant  to  be an  idempotent, re-entrant  operation.  No clue  if  that works  in all  or
-# any cases.
-function setup-ssh-agent-idempotent {
-  # - setup ssh agent,
-  # - check for existing agent,
-  # - reuse creds if so.
-  if [[ ! -v SSH_AGENT_STARTED ]] && setup-ssh-agent; then
-    export SSH_AGENT_STARTED="$SSH_AUTH_SOCK:$SSH_AGENT_PID"
-  fi
-}

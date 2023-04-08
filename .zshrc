@@ -107,9 +107,8 @@ fi
 # load all the other scripts from this one
 source "${ZSH_DIR}/wrapper.zshrc"
 
-declare -ga startup_order=(
+declare -a startup_order=(
   static-paths:"${ZSH_DIR}/static-paths.zsh"
-  dynamic-paths:"${ZSH_DIR}/dynamic-paths.zsh"
   aliases:"${ZSH_DIR}/aliases.zsh"
   parallel-wrapper:"${ZSH_DIR}/parallel-wrapper.zsh"
   git-wrapper:"${ZSH_DIR}/git-wrapper.zsh"
@@ -120,6 +119,7 @@ declare -ga startup_order=(
   find-closest-command-not-found:"${ZSH_DIR}/find-closest-command-not-found.zsh"
   setup-editor:"${ZSH_DIR}/setup-editor.zsh"
   local-config:"$HOME/.local.zsh"
+  dynamic-paths:"${ZSH_DIR}/dynamic-paths.zsh"
 )
 
 verbose-load-scripts "${startup_order[@]}"

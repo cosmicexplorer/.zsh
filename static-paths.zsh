@@ -1,15 +1,19 @@
 source "${ZSH_DIR}/functions.zsh"
 
+# Link $PYTHONPATH and $pythonpath together as scalar and array variables with entries separated by
+# a colon.
+declare -x -T PYTHONPATH="${PYTHONPATH:-}" pythonpath ':'
 # Make my python visible!!!
-export PYTHONPATH="$(extend_path_var 'PYTHONPATH' "${ZSH_DIR}/snippets/python")"
+pythonpath+="${ZSH_DIR}/snippets/python/"
 
-add_path_if /usr/bin/{core_perl,vendor_perl}
-add_path_if "$HOME/.cabal/bin"
-add_path_before_if '/usr/local/bin'
-add_path_before_if "$HOME/.local/bin"
-add_path_before_if "$HOME/go/bin"
+declare maybe_dir
+for maybe_dir in /usr/bin/{core_perl,vendor_perl} "$HOME/.cabal/bin" "$ZSH_DIR/snippets/bash"; do
+  add-path-if "$maybe_dir"
+done
 
-add_path_if "$ZSH_DIR/snippets/bash"
+for maybe_dir in /usr/local/bin "$HOME/.local/bin" "$HOME/go/bin"; do
+  add-path-before-if "$maybe_dir"
+done
 
 if [[ -f '/etc/profile.d/jre.sh' ]]; then
     source /etc/profile.d/jre.sh

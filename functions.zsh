@@ -1,17 +1,37 @@
 #;;; -*- mode: sh; sh-shell: zsh -*-
 
 function args-as-lines {
-  printf '%s\n' $@
+  printf '%s\n' "$@"
 }
 
 function printfmt {
-  printf "$1\n" ${@:2}
+  printf "$1\n" "${@:2}"
 }
 
-function err {
-  if [[ "$#" -ne 0 ]]; then
-    echo '# ' $@ >&2
+declare -x WARNING_STREAM='-'
+
+function warning-stream {
+  if [[ "$WARNING_STREAM" == '-' ]]; then
+    cat >&2
+  elif [[ -w "$WARNING_STREAM" ]]; then
+    cat >>"$WARNING_STREAM"
+  else
+    die "unrecognized warning stream '${WARNING_STREAM}'"
   fi
+}
+
+# FIXME: make this readonly by only sourcing this file one time!
+declare -x ERR_PREFIX='!'
+
+function err {
+  if [[ "$#" -eq 0 ]]; then
+    # Print a single newline to the error stream.
+    echo
+  else
+    # Print the prefix, then all of the args.
+    echo "$ERR_PREFIX" "$@"
+  fi \
+    | warning-stream
 }
 
 function die {
@@ -19,50 +39,37 @@ function die {
   exit 1
 }
 
-function spew {
-  cat >&2
-}
 
-function get-last-arg {
-  lastArg=""
-  prevArgs=""
-  for arg in $@; do
-    prevArgs="$prevArgs $lastArg"
-    lastArg="$arg"
-  done
-  echo "$(echo $prevArgs | cut -b3-)\n$lastArg"
-}
+# FIXME: make this readonly by only sourcing this file one time!
+declare -x DEFAULT_PRINT_VAR_VAL_FMT="'\$%s'=>'%s'\n"
 
-export default_print_var_val_fmt="'\$%s'=>'%s'\n"
-
-function print_var_with_val {
-  varname="$1"
-  val="$2"
-  fmt="${3:-""$default_print_var_val_fmt""}"
-  printf "$fmt" "${varname}" "${val}"
+function print-var-with-val {
+  local -r varname="$1" val="$2" fmt="${3:-${DEFAULT_PRINT_VAR_VAL_FMT}}"
+  printf "$fmt" "$varname" "$val"
 }
 
 function add-newline-if-not {
   sed -e '$a\'
 }
-function var_log {
-  varname="$1"
-  print_var_with_val "$varname" "${(P)varname}"
+
+function var-log {
+  local -r varname="$1"
+  print-var-with-val "$varname" "${(P)varname}"
 }
 
-function show_vars {
-  for arg; do var_log "$arg"; done
+function show-vars {
+  for arg; do var-log "$arg"; done
 }
 
-
-export DEFAULT_SEP='----\n'
-function print_sep {
-  echo -n "$DEFAULT_SEP"
+# FIXME: make this readonly by only sourcing this file one time!
+declare -x DEFAULT_RECORD_SEPARATOR='--------------------\n'
+function print-sep {
+  echo -n "$DEFAULT_RECORD_SEPARATOR"
 }
 
 function sep {
-  $@
-  print_sep
+  "$@"
+  print-sep
 }
 
 function g {
@@ -70,18 +77,18 @@ function g {
 }
 # recursive
 function gr {
-  g -R $@ .
+  g -R "$@" .
 }
 
 # ps is cool too
 function p {
-  ps aux | grep -vE '\bgrep\b' | grep -iE --color=auto --binary-files=without-match $@
+  ps aux | grep -vE '\bgrep\b' | grep -iE --color=auto --binary-files=without-match "$@"
 }
 function ptree {
-  ps auxf $@
+  ps auxf "$@"
 }
 function po {
-  ps axo $@
+  ps axo "$@"
 }
 function ps-help {
   cat 1>&2 <<EOF
@@ -141,28 +148,11 @@ function emacs-kill-processes {
   ps -C emacs -o pid:1 --no-headers | xargs kill -9
 }
 
-# TODO: make this better
-function find-grep {
-  argsWithLast=$(get-last-arg $@)
-  findArgs=$(echo $argsWithLast | head -n1)
-  grepPattern=$(echo $argsWithLast | tail -n1)
-  # string manipulation is hard
-  echo $findArgs | tr ' ' '\n' | while read el; do
-    echo $el
-  done | xargs find | while read line; do
-    grep-default $grepPattern "$line"
-  done
-}
-
-function grep-with-depth {
-  find-grep . -maxdepth "$1" -type f "$2"
-}
-
-function export_var_if_new_dir {
+function export-var-if-new-dir {
   local -r dir_path="$1" var_name="$2"
 
   if [[ -v "$var_name" ]]; then
-    warn-here <<EOF
+    warning-stream <<EOF
 env var '${var_name}' is already defined!
 prev: '${(P)var_name}', attempted: '${dir_path}'
 EOF
@@ -172,35 +162,48 @@ EOF
   if [[ -d "$dir_path" ]]; then
     export "${var_name}=${dir_path}"
   else
-    warn-here <<EOF
+    warning-stream <<EOF
 attempted value '${dir_path}' for var '${var_name}' is not a directory!
 EOF
     return 0
   fi
 }
 
-function export_var_extend_bin_if {
+function repeat-string {
+  local -r base="$1"
+  local extent="$2"
+  local ret=''
+  for _ in $(seq "$extent"); do
+    ret+="$base"
+    echo "$ret"
+  done
+  echo "$ret"
+}
+
+function export-var-extend-bin-if {
   local -r dir_path="$1" var_name="$2"
 
-  export_var_if_new_dir "$dir_path" "$var_name"
+  export-var-if-new-dir "$dir_path" "$var_name"
 
   local -r bin_dir="${dir_path}/bin"
-  if [[ -d "$bin_dir" ]]; then
-    export PATH="${PATH}:${bin_dir}"
-  fi
+  add-path-if "$bin_dir"
 }
 
-function add_path_before_if {
+function add-path-before-if {
   for arg; do
-    [[ -d "$arg" ]] && PATH="$arg:$PATH"
+    if [[ -d "$arg" ]]; then
+      path=("$arg" "${path[@]}")
+    fi
   done
 }
 
-function add_path_if {
+function add-path-if {
   for arg; do
-    [[ -d "$arg" ]] && PATH="$PATH:$arg"
+    [[ -d "$arg" ]] && path+="$arg"
   done
 }
+
+declare -x WARNINGS_ON
 
 function warn {
   if [[ -v WARNINGS_ON ]]; then
@@ -335,7 +338,7 @@ function as-editable-script {
   "$tmp_script" "$rest[@]"
 }
 
-function go {
+function go-try-this {
   pushd "$1" \
     && trap 'popd' EXIT \
     && "${@:2}"
