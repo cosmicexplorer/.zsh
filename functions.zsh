@@ -503,3 +503,8 @@ function extend_path_var {
 
   echo "${entries_string}${var_expansion_string}"
 }
+
+function into-clipboard {
+  xclip -i -selection clipboard
+}
+command-MUST-exist xclip
