@@ -1,8 +1,6 @@
-# -*- mode: sh; sh-shell: zsh -*-
-
 # This file introduces a lot of intermediate files that aren't really written down. Sorry!
 
-source "${ZSH_DIR}/functions.zsh"
+# source "${ZSH_DIR}/functions.zsh"
 
 function valid-ssh-agent-p {
   [[ -v SSH_AUTH_SOCK && -S "$SSH_AUTH_SOCK" ]] && \

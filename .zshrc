@@ -108,6 +108,7 @@ fi
 source "${ZSH_DIR}/wrapper.zshrc"
 
 declare -a startup_order=(
+  functions:"${ZSH_DIR}/functions.zsh"
   static-paths:"${ZSH_DIR}/static-paths.zsh"
   aliases:"${ZSH_DIR}/aliases.zsh"
   parallel-wrapper:"${ZSH_DIR}/parallel-wrapper.zsh"

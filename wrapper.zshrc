@@ -3,7 +3,6 @@
 set -o pipefail
 
 source "${ZSH_DIR}/colors.zsh"
-source "${ZSH_DIR}/functions.zsh"
 
 declare debug_init_log="$ZSH_DIR/.zsh-init-debug.log"
 
@@ -32,15 +31,31 @@ declare -g LOAD_ACTION_DESCRIPTION LOAD_ACTION_TECHNIQUE
 
 function verbose-perform-action {
   local -r target="$1"
+  local -r script_output="$(mktemp)"
   case "$LOAD_ACTION_TECHNIQUE" in
     source-script)
-      source "$target"
+      # We want to be able to immediately exit with an error message when sourcing our scripts, but
+      # if we call `exit` (or if we have any non-zero returns with `set -e` on), our shell will
+      # immediately exit, which usually closes the terminal and doesn't print any of the
+      # error messaging. By first sourcing a script in a subshell, we avoid that immediate exit, but
+      # any changes to the shell environment don't get propagated to the parent shell. So instead we just accept
+      # the 2x slowdown of running the script twice, so we never source the script at the top level
+      # unless we know it will succeed. If our scripts modify any OS state such as the filesystem,
+      # we might get weird errors, but we have tried to make our startup scripts idempotent anyway,
+      # and hopefully this will avoid any problems.
+      if (source "$target" &>"$script_output"); then
+        source "$target"
+      else
+        cat "$script_output" >&2
+        return 1
+      fi
       ;;
     execute-command)
-      "${target[@]}"
+      ("${target[@]}")
       ;;
     *)
-      die "unrecognized \${LOAD_ACTION_TECHNIQUE}=${LOAD_ACTION_TECHNIQUE}"
+      echo "unrecognized \${LOAD_ACTION_TECHNIQUE}=${LOAD_ACTION_TECHNIQUE}" >&2
+      return 1
       ;;
   esac
 }
@@ -77,8 +92,10 @@ function verbose-perform-initialization-actions {
     # last line of the script!!! Abhorrent!!!
     color-start purple
 
-    verbose-perform-action "$target" \
-      || (color-end ; return 1)
+    if ! verbose-perform-action "$target"; then
+      color-end
+      return 1
+    fi
     color-end
 
     light_green 'success' | log-info-if-tty

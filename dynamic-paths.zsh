@@ -1,4 +1,4 @@
-source "${ZSH_DIR}/functions.zsh"
+# source "${ZSH_DIR}/functions.zsh"
 
 function setup-gopath-goroot {
   if [[ ! -v GOPATH ]]; then

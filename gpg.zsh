@@ -1,6 +1,4 @@
-# -*- mode: sh; sh-shell: zsh -*-
-
-source "${ZSH_DIR}/functions.zsh"
+# source "${ZSH_DIR}/functions.zsh"
 
 # gpg-agent is very often provided as a systemd service -- this sets it up if it doesn't.
 # This  is meant  to  be an  idempotent, re-entrant  operation.  No clue  if  that works  in all  or

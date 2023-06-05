@@ -1,4 +1,4 @@
-source "${ZSH_DIR}/functions.zsh"
+# source "${ZSH_DIR}/functions.zsh"
 
 # Link $PYTHONPATH and $pythonpath together as scalar and array variables with entries separated by
 # a colon.

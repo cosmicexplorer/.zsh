@@ -1,4 +1,4 @@
-#;;; -*- mode: sh; sh-shell: zsh -*-
+# source "${ZSH_DIR}/colors.zsh"
 
 function args-as-lines {
   printf '%s\n' "$@"
@@ -24,19 +24,22 @@ function warning-stream {
 declare -x ERR_PREFIX='!'
 
 function err {
-  if [[ "$#" -eq 0 ]]; then
-    # Print a single newline to the error stream.
+  # Print a single newline to the error stream.
+  (
     echo
-  else
-    # Print the prefix, then all of the args.
-    echo "$ERR_PREFIX" "$@"
-  fi \
+    if [[ "$#" -eq 0 ]]; then
+      red "$ERR_PREFIX" "<UNSPECIFIED ERROR>" '\n'
+    else
+      # Print the prefix, then all of the args.
+      red "$ERR_PREFIX" "$@" '\n'
+    fi
+  ) \
     | warning-stream
 }
 
 function die {
   err $@
-  exit 1
+  return 1
 }
 
 
@@ -388,13 +391,8 @@ function cmd-rc {
 function command-MUST-exist {
   local -r cmd="$1"
   local -r exists="$(cmd-rc command-exists "$cmd")"
-  if [[ "$exists" -ne 0 ]]; then
-    err "command '$cmd' is REQUIRED for $exists."
-    if [[ -v "$exists" ]]; then
-      # `which` prints out what the function actually is.
-      which "$exists"
-    fi
-    exit 1
+  if ! command-exists "$cmd"; then
+    die "command '$cmd' is REQUIRED!"
   fi
 }
 
@@ -470,8 +468,8 @@ function locate-executable-files {
   # TODO: `filter executable-file-p` is failing because the `parallel` invocation inside of `filter`
   # can't access the defintion of the shell function!
   # TODO: `env_parallel` exists, but what if we could avoid having a daemon by using `whence -f`??
-  # TODO: !!!!!! what if we created a generalized IR between shells among the vein of `whence -f` is a
-  # compat adapter between all shells!!!!!!!
+  # TODO: !!!!!! what if we created a generalized IR between shells among the vein of `whence -f` is
+  # a compat adapter between all shells!!!!!!!
   #   - for now, we have a working replacement (an inline function definition with the name 'f'.
   locate "${executable_filename}" \
     | grep -E "/${executable_filename}\$" \

@@ -1,6 +1,4 @@
-# -*- mode: sh; sh-shell: zsh -*-
-
-source "${ZSH_DIR}/functions.zsh"
+# source "${ZSH_DIR}/functions.zsh"
 
 # This  is meant  to  be an  idempotent, re-entrant  operation.  No clue  if  that works  in all  or
 # any cases.
