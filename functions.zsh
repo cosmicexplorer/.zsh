@@ -390,7 +390,6 @@ function cmd-rc {
 
 function command-MUST-exist {
   local -r cmd="$1"
-  local -r exists="$(cmd-rc command-exists "$cmd")"
   if ! command-exists "$cmd"; then
     die "command '$cmd' is REQUIRED!"
   fi
