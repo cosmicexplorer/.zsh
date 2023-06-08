@@ -36,13 +36,13 @@ function verbose-perform-action {
     source-script)
       # We want to be able to immediately exit with an error message when sourcing our scripts, but
       # if we call `exit` (or if we have any non-zero returns with `set -e` on), our shell will
-      # immediately exit, which usually closes the terminal and doesn't print any of the
-      # error messaging. By first sourcing a script in a subshell, we avoid that immediate exit, but
-      # any changes to the shell environment don't get propagated to the parent shell. So instead we just accept
-      # the 2x slowdown of running the script twice, so we never source the script at the top level
-      # unless we know it will succeed. If our scripts modify any OS state such as the filesystem,
-      # we might get weird errors, but we have tried to make our startup scripts idempotent anyway,
-      # and hopefully this will avoid any problems.
+      # immediately exit, which usually closes the terminal and doesn't print any of the error
+      # messaging. By first sourcing a script in a subshell, we avoid that immediate exit, but any
+      # changes to the shell environment don't get propagated to the parent shell. So instead we
+      # just accept the 2x slowdown of running the script twice, so we never source the script at
+      # the top level unless we know it will succeed. If our scripts modify any OS state such as the
+      # filesystem, we might get weird errors, but we have tried to make our startup scripts
+      # idempotent anyway, and hopefully this will avoid any problems.
       if (source "$target" &>"$script_output"); then
         source "$target"
       else
@@ -51,7 +51,14 @@ function verbose-perform-action {
       fi
       ;;
     execute-command)
-      ("${target[@]}")
+      # Similarly for here, as we may also wish to call shell functions which modify the
+      # local environment.
+      if ("${target[@]}" &>"$script_output"); then
+        "${target[@]}"
+      else
+        cat "$script_output" >&2
+        return 1
+      fi
       ;;
     *)
       echo "unrecognized \${LOAD_ACTION_TECHNIQUE}=${LOAD_ACTION_TECHNIQUE}" >&2
