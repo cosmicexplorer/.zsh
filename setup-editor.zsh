@@ -31,7 +31,7 @@ function make-editor-selection-global {
     return 0
   fi
 
-  if (echo -n ${${(M)PREFERRED_EDITORS[@]:#${editor}}:?'Unknown editor'}) ; then
+  if (printf '\n✅ %s\n' ${${(M)PREFERRED_EDITORS[@]:#${editor}}:?'Unknown editor'}) ; then
     export EDITOR="$editor"
     export GIT_EDITOR="$editor"
     export VISUAL="$editor"
