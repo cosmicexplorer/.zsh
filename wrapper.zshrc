@@ -27,6 +27,52 @@ function fail-from-stdin {
   return 1
 }
 
+declare -g ERROR_WRAP_INIT
+# : ${ERROR_WRAP_INIT:='y'}
+
+# We want to be able to immediately exit with an error message when sourcing our scripts, but if we
+# call `exit` (or if we have any non-zero returns with `set -e` on), our shell will immediately
+# exit, which usually closes the terminal and doesn't print any of the error messaging. By first
+# sourcing a script in a subshell, we avoid that immediate exit, but any changes to the shell
+# environment don't get propagated to the parent shell. So instead we just accept the 2x slowdown of
+# running the script twice, so we never source the script at the top level unless we know it will
+# succeed. If our scripts modify any OS state such as the filesystem, we might get weird errors, but
+# we have tried to make our startup scripts idempotent anyway, and hopefully this will avoid
+# any problems.
+function maybe-wrap-source {
+  local -r target="$1"
+  local -r output="$2"
+  if [[ -n "${ERROR_WRAP_INIT:-}" ]]; then
+    if ((set -x; source "$target") &>"$output"); then
+      source "$target"
+    else
+      local -ri rc="$?"
+      cat "$output" >&2
+      return "$rc"
+    fi
+  else
+    source "$target"
+  fi
+}
+
+# Similarly for here, as we may also wish to call shell functions which modify the
+# local environment.
+function maybe-execute-command {
+  local -r output="$1"
+  local -ra cmd=( "${@:2}" )
+  if [[ -n "${ERROR_WRAP_INIT:-}" ]]; then
+    if ((set -x; "${cmd[@]}") &>"$output"); then
+      "${cmd[@]}"
+    else
+      local -ri rc="$?"
+      cat "$output" >&2
+      return "$rc"
+    fi
+  else
+    "${cmd[@]}"
+  fi
+}
+
 declare -g LOAD_ACTION_DESCRIPTION LOAD_ACTION_TECHNIQUE
 
 function verbose-perform-action {
@@ -34,31 +80,10 @@ function verbose-perform-action {
   local -r script_output="$(mktemp)"
   case "$LOAD_ACTION_TECHNIQUE" in
     source-script)
-      # We want to be able to immediately exit with an error message when sourcing our scripts, but
-      # if we call `exit` (or if we have any non-zero returns with `set -e` on), our shell will
-      # immediately exit, which usually closes the terminal and doesn't print any of the error
-      # messaging. By first sourcing a script in a subshell, we avoid that immediate exit, but any
-      # changes to the shell environment don't get propagated to the parent shell. So instead we
-      # just accept the 2x slowdown of running the script twice, so we never source the script at
-      # the top level unless we know it will succeed. If our scripts modify any OS state such as the
-      # filesystem, we might get weird errors, but we have tried to make our startup scripts
-      # idempotent anyway, and hopefully this will avoid any problems.
-      if (source "$target" &>"$script_output"); then
-        source "$target"
-      else
-        cat "$script_output" >&2
-        return 1
-      fi
+      maybe-wrap-source "$target" "$script_output"
       ;;
     execute-command)
-      # Similarly for here, as we may also wish to call shell functions which modify the
-      # local environment.
-      if ("${target[@]}" &>"$script_output"); then
-        "${target[@]}"
-      else
-        cat "$script_output" >&2
-        return 1
-      fi
+      maybe-execute-command "$script_output" "${target[@]}"
       ;;
     *)
       echo "unrecognized \${LOAD_ACTION_TECHNIQUE}=${LOAD_ACTION_TECHNIQUE}" >&2
