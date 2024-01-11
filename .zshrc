@@ -118,8 +118,8 @@ declare -a startup_order=(
   ssh:"${ZSH_DIR}/ssh.zsh"
   x:"${ZSH_DIR}/x.zsh"
   find-closest-command-not-found:"${ZSH_DIR}/find-closest-command-not-found.zsh"
-  setup-editor:"${ZSH_DIR}/setup-editor.zsh"
   local-config:"$HOME/.local.zsh"
+  setup-editor:"${ZSH_DIR}/setup-editor.zsh"
   dynamic-paths:"${ZSH_DIR}/dynamic-paths.zsh"
 )
 

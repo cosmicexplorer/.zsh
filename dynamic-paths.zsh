@@ -57,10 +57,10 @@ function locate-java-home {
 }
 
 local -ra operations=(
-  setup-gopath-goroot:setup-gopath-goroot
-  setup-rustup:setup-rustup
-  probe-rust-src-paths:probe-rust-src-paths
-  locate-java-home:locate-java-home
+  setup-gopath-goroot
+  setup-rustup
+  probe-rust-src-paths
+  locate-java-home
 )
 
 verbose-execute-commands "${operations[@]}"
