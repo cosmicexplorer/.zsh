@@ -15,6 +15,7 @@ for maybe_dir in /usr/local/bin "$HOME/.local/bin" "$HOME/go/bin"; do
   add-path-before-if "$maybe_dir"
 done
 
-if [[ -f '/etc/profile.d/jre.sh' ]]; then
-    source /etc/profile.d/jre.sh
-fi
+# .............this depends on a function append_path which doesn't exist, jfc
+# if [[ -f '/etc/profile.d/jre.sh' ]]; then
+#     source /etc/profile.d/jre.sh
+# fi
