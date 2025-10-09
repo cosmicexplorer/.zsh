@@ -612,19 +612,8 @@ function evaluate-spack-checkout {
     color-start "$purple_fmt"
     printf '%s\n' "${(q-)rel}"
 
-    [[ -v SPACK_PYTHON ]] && declare +r SPACK_PYTHON
-    . share/spack/setup-env.sh
-    local -r -i 10 rc=$?
-    [[ -v SPACK_PYTHON ]] && declare -r SPACK_PYTHON
     popd >/dev/null
-
-    if [[ $rc -ne 0 ]]; then
-      err "failed to activate spack environment in ${(q-)sp}"
-      return $rc
-    elif [[ -v SPACK_PYTHON ]]; then
-      declare -gx SPACK_PYTHON
-    fi
-  fi | ensure-trailing-newline
+  fi
 }
 
 function spack-checkout-var {
