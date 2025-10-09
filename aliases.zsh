@@ -32,7 +32,7 @@ function ec {
 # NOTE: this function is so so nice
 function ecr {
   (
-    with-fifo 'cat' 'add-newline-if-not' && \
+    with-fifo 'cat' 'ensure-trailing-newline' && \
       emacsclient -e \
        "(load \"$ZSH_DIR/read-pipe.el\")" \
        "(read-from-pipe \"${WITH_FIFO_OUT_QUEUES[1]}\")" \

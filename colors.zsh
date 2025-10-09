@@ -2,7 +2,7 @@ declare -g ANSI_COLOR_START="\\033["
 declare -g ANSI_COLOR_END_DELIMITER="m"
 declare -g ANSI_COLOR_STOP="0"
 
-declare -gA ANSI_KNOWN_COLORS=(
+declare -grA ANSI_KNOWN_COLORS=(
   [black]='0;30'
   [blue]='0;34'
   [green]='0;32'
@@ -21,12 +21,25 @@ declare -gA ANSI_KNOWN_COLORS=(
   [white]='1;37'
 )
 
-function color-start {
+function lookup-color {
   local -r color_name="$1"
-  local -r color_code="$ANSI_KNOWN_COLORS[$color_name]"
+  local -r code="${ANSI_KNOWN_COLORS[$color_name]:-}"
+  if [[ -z "$code" ]]; then
+    echo "invalid color name ${(q-)color_name}" >&2
+    return 1
+  fi
+  print -r -n "$code"
+}
+
+function color-start {
+  local -r code="$1"
+  if [[ "$code" != [01]';'[0-9][0-9] ]]; then
+    echo "internal logic error encoding color code ${(q-)code}" >&2
+    return 1
+  fi
   printf '%b' \
     "$ANSI_COLOR_START" \
-    "$color_code" \
+    "$code" \
     "$ANSI_COLOR_END_DELIMITER"
 }
 
@@ -37,59 +50,87 @@ function color-end {
     "$ANSI_COLOR_END_DELIMITER"
 }
 
+function ensure-trailing-newline {
+  sed -e '$a\'
+}
+
+declare -rxg format_cat_control='FORMAT_CAT_CONTROL'
+function format-cat {
+  case "${${(P)format_cat_control}:-}" in
+    ENSURE-TRAILING-NEWLINE)
+      ensure-trailing-newline
+      ;;
+    '')
+      cat
+      ;;
+    *)
+      yellow "unrecognized value for ${(P)format_cat_control}: ${(q-)format_cat_control}" >&2
+      light_gray 'falling back to cat...' >&2
+      cat
+      ;;
+  esac
+}
+
+function as-color {
+  local -r code="$1"
+  # NB: coroutine!
+  color-start "$code" \
+    && format-cat \
+    && color-end
+}
+
 function with-color {
-  local -r color_name="$1"
+  local -r code="$1"
   local -ra text=( "${@:2}" )
-  color-start "$color_name"
-  printf '%b' "${(j: :)text[@]}"
-  color-end
+  printf '%b' "${(j: :)text[@]}" \
+    | as-color "$code"
 }
 
 function black {
-  with-color 'black' "$@"
+  with-color "$(lookup-color black)" "$@"
 }
 function blue {
-  with-color 'blue' "$@"
+  with-color "$(lookup-color blue)" "$@"
 }
 function green {
-  with-color 'green' "$@"
+  with-color "$(lookup-color green)" "$@"
 }
 function cyan {
-  with-color 'cyan' "$@"
+  with-color "$(lookup-color cyan)" "$@"
 }
 function red {
-  with-color 'red' "$@"
+  with-color "$(lookup-color red)" "$@"
 }
 function purple {
-  with-color 'purple' "$@"
+  with-color "$(lookup-color purple)" "$@"
 }
 function brown {
-  with-color 'brown' "$@"
+  with-color "$(lookup-color brown)" "$@"
 }
 function light_gray {
-  with-color 'light_gray' "$@"
+  with-color "$(lookup-color light_gray)" "$@"
 }
 function dark_gray {
-  with-color 'dark_gray' "$@"
+  with-color "$(lookup-color dark_gray)" "$@"
 }
 function light_blue {
-  with-color 'light_blue' "$@"
+  with-color "$(lookup-color light_blue)" "$@"
 }
 function light_green {
-  with-color 'light_green' "$@"
+  with-color "$(lookup-color light_green)" "$@"
 }
 function light_cyan {
-  with-color 'light_cyan' "$@"
+  with-color "$(lookup-color light_cyan)" "$@"
 }
 function light_red {
-  with-color 'light_red' "$@"
+  with-color "$(lookup-color light_red)" "$@"
 }
 function light_purple {
-  with-color 'light_purple' "$@"
+  with-color "$(lookup-color light_purple)" "$@"
 }
 function yellow {
-  with-color 'yellow' "$@"
+  with-color "$(lookup-color yellow)" "$@"
 }
 function white {
-  with-color 'white' "$@"
+  with-color "$(lookup-color white)" "$@"
 }

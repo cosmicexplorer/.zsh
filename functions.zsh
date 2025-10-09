@@ -8,7 +8,7 @@ function printfmt {
   printf "$1\n" "${@:2}"
 }
 
-declare -x WARNING_STREAM='-'
+declare -rxg WARNING_STREAM='-'
 
 function warning-stream {
   if [[ "$WARNING_STREAM" == '-' ]]; then
@@ -21,7 +21,7 @@ function warning-stream {
 }
 
 # FIXME: make this readonly by only sourcing this file one time!
-declare -x ERR_PREFIX='!'
+declare -rxg ERR_PREFIX='!'
 
 function err {
   # Print a single newline to the error stream.
@@ -42,30 +42,25 @@ function die {
   return 1
 }
 
-
 # FIXME: make this readonly by only sourcing this file one time!
-declare -x DEFAULT_PRINT_VAR_VAL_FMT="'\$%s'=>'%s'\n"
+declare -rxg DEFAULT_PRINT_VAR_VAL_FMT="%s => %s"
 
 function print-var-with-val {
   local -r varname="$1" val="$2" fmt="${3:-${DEFAULT_PRINT_VAR_VAL_FMT}}"
-  printf "$fmt" "$varname" "$val"
-}
-
-function add-newline-if-not {
-  sed -e '$a\'
+  printf "$fmt" "${(q-)varname}" "${(q-)val}"
 }
 
 function var-log {
   local -r varname="$1"
-  print-var-with-val "$varname" "${(P)varname}"
+  print-var-with-val "$varname" "${(P)varname}" \
+    | format-cat
 }
 
 function show-vars {
   for arg; do var-log "$arg"; done
 }
 
-# FIXME: make this readonly by only sourcing this file one time!
-declare -x DEFAULT_RECORD_SEPARATOR='--------------------\n'
+declare -rxg DEFAULT_RECORD_SEPARATOR='--------------------\n'
 function print-sep {
   echo -n "$DEFAULT_RECORD_SEPARATOR"
 }
@@ -253,7 +248,7 @@ function silent-on-success {
   local -r tmpdir="$(mktemp -d)"
   local -r outf="$tmpdir/stdout" errf="$tmpdir/stderr"
   trap "rm -rf $tmpdir" EXIT
-  ${cmd} >"$outf" 2>"$errf" || (
+  "${cmd[@]}" >"$outf" 2>"$errf" || (
     local -r code="$?"
     cat "$outf"
     err "$errf"
@@ -356,7 +351,7 @@ function with-file-on-path-as {
   trap 'rm -fv "$tmp_path_entry"' EXIT
 
   cp -v "$exe" "${tmp_path_entry}/${desired_exe_name}"
-  PATH="${tmp_path_entry}:${PATH}" "$cmd[@]"
+  PATH="${tmp_path_entry}:${PATH}" "${cmd[@]}"
 }
 
 function kk {
@@ -505,3 +500,134 @@ function into-clipboard {
   xclip -i -selection clipboard
 }
 command-MUST-exist xclip
+
+function lookup-color-default {
+  local -r varname=$1 default=$2
+  local -r resolved_name=${(P)varname:-$default}
+  lookup-color "$resolved_name"
+}
+
+declare -gxrA var_color_lookup=(
+  [VAR_COLOR]=light_gray
+  [VAL_COLOR]=white
+)
+
+function lookup-var-decl-color {
+  local -a ret=( )
+  for env_key default in ${(kv)var_color_lookup[@]}; do
+    ret+="$(lookup-color-default "$env_key" "$default")"
+  done
+  printf '%s\n' "${ret[@]}"
+}
+
+function attempt-var-decl {
+  setopt local_options
+  set -uo pipefail
+
+  local -r varname=$1 value=$2
+  local -ra eval_cmd=( "${@:3}" )
+  local -ra colors=( $(lookup-var-decl-color) )
+
+  declare -gx ${varname}="${value}"
+  printf '%s => ' "$varname" | as-color "${colors[1]}"
+  if "${eval_cmd[@]}" "$value" | as-color "${colors[2]}"; then
+    declare -r ${varname}
+  else
+    local -r -i 10 rc=$?
+    unset ${varname}
+    return $rc
+  fi
+}
+
+function evaluate-python {
+  setopt local_options
+  set -euo pipefail
+
+  local -r py=$1
+  if [[ ! -x "$py" ]]; then
+    err "no executable was found at ${(q-)py}"
+    return 1
+  fi
+
+  if ! "$py" -VV; then
+    local -r -i 10 rc=$?
+    err "executable at ${(q-)py} was not a standard python"
+    return $rc
+  fi \
+    | sed -re 's#^Python\s+([^\(]+)\s+\((([^:,]+),|.*?:([^,]+),).*$#@\1 (\3\4)#' \
+    | sed -e 's#\s*free-threading build#[+free]#'
+}
+
+function python-var {
+  local -r varname=$1 value=$2
+  attempt-var-decl "$varname" "$value" evaluate-python
+}
+
+function clean-remote-url {
+  sed -r \
+      -e 's#^https?://[^/]+/?(.*)$#\1#' \
+      -e 's#^[^@]+@[^:]+:(.*)$#\1#'
+}
+
+function evaluate-spack-checkout {
+  setopt local_options
+  set -uo pipefail
+
+  local -r sp=$1
+  if [[ ! -d "$sp" ]]; then
+    err "no directory was found at ${(q-)sp}"
+    return 1
+  fi
+
+  local -r sbang="${sp}/bin/sbang"
+  if [[ ! -x "$sbang" ]]; then
+    err "no sbang wrapper script was found at ${(q-)sbang}"
+    return 1
+  fi
+
+  local rel="$sp"
+  if [[ -v SPACK_CHECKOUT_BASE_DIR ]]; then
+    if [[ ! -d "$SPACK_CHECKOUT_BASE_DIR" ]]; then
+      err "environment variable \$SPACK_CHECKOUT_BASE_DIR=${SPACK_CHECKOUT_BASE_DIR} did not point to a directory path"
+      return 1
+    fi
+    rel=$(realpath --logical --canonicalize-existing --relative-to "$SPACK_CHECKOUT_BASE_DIR" \
+                   "$sp")
+  fi
+  local -r base_ref=${SPACK_CHECKOUT_BASE_REF:-develop}
+  if pushd "$sp" >/dev/null; then
+    local -r checksum=$(git rev-parse --short=6 HEAD)
+    local -r -i 10 since_develop=$(git rev-list --count "${base_ref}..")
+    local -r push_remote=$(git remote get-url --push origin | clean-remote-url)
+
+    local -r purple_fmt=$(lookup-color purple)
+    local -r yellow_fmt=$(lookup-color yellow)
+
+    printf '>> %s [@%s = %s+%d]' \
+           "$push_remote" \
+           "$checksum" \
+           "$base_ref" "$since_develop"
+    color-start "$yellow_fmt"
+    printf ' @ '
+    color-start "$purple_fmt"
+    printf '%s\n' "${(q-)rel}"
+
+    [[ -v SPACK_PYTHON ]] && declare +r SPACK_PYTHON
+    . share/spack/setup-env.sh
+    local -r -i 10 rc=$?
+    [[ -v SPACK_PYTHON ]] && declare -r SPACK_PYTHON
+    popd >/dev/null
+
+    if [[ $rc -ne 0 ]]; then
+      err "failed to activate spack environment in ${(q-)sp}"
+      return $rc
+    elif [[ -v SPACK_PYTHON ]]; then
+      declare -gx SPACK_PYTHON
+    fi
+  fi | ensure-trailing-newline
+}
+
+function spack-checkout-var {
+  local -r varname=$1 value=$2
+  attempt-var-decl "$varname" "$value" evaluate-spack-checkout
+}

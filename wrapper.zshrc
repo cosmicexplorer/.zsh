@@ -58,19 +58,11 @@ function maybe-wrap-source {
 # Similarly for here, as we may also wish to call shell functions which modify the
 # local environment.
 function maybe-execute-command {
+  # FIXME: temp output unused!!
   local -r output="$1"
   local -ra cmd=( "${@:2}" )
-  if [[ -n "${ERROR_WRAP_INIT:-}" ]]; then
-    if ((set -x; "${cmd[@]}") &>"$output"); then
-      "${cmd[@]}"
-    else
-      local -ri rc="$?"
-      cat "$output" >&2
-      return "$rc"
-    fi
-  else
-    "${cmd[@]}"
-  fi
+
+  "${cmd[@]}"
 }
 
 declare -g LOAD_ACTION_DESCRIPTION LOAD_ACTION_TECHNIQUE
@@ -97,6 +89,11 @@ declare -g verbose_init_nesting_level=0
 # Pass in the associative array as a flattened list composed of key-value pairs, each separated by
 # a colon ':'.
 function verbose-perform-initialization-actions {
+  setopt local_options
+  set -uo pipefail
+
+  local -ra args=( "$@" )
+
   local indent='> '
   if [[ "$verbose_init_nesting_level" -gt 0 ]]; then
     brown "\nsub-initialization!\n" | log-info-if-tty
@@ -106,10 +103,12 @@ function verbose-perform-initialization-actions {
   fi
   (( verbose_init_nesting_level++ ))
   # NB: implicitly iterate over $@.
-  for action_spec; do
+  local description target
+  local -i 10 rc
+  for action_spec in "${args[@]}"; do
     # Split the entry by a colon ':'.
-    local description="${action_spec/%:*/}"
-    local target="${action_spec/#*:/}"
+    description="${action_spec/%:*/}"
+    target="${action_spec/#*:/}"
 
     # NB: We unfortunately have to pass in each and every one of these `| log-info-if-tty` pipelines
     # each time, because otherwise zsh will literally just drop the `source` line and do it in a
@@ -122,13 +121,14 @@ function verbose-perform-initialization-actions {
     # interact with our zsh setup scripts (e.g. to set up CPAN on a new machine).
     # TODO: `source` does NOT fail when an individual line errors, and just returns the code of the
     # last line of the script!!! Abhorrent!!!
-    color-start purple
+    color-start "$(lookup-color purple)"
 
-    if ! verbose-perform-action "$target"; then
-      color-end
-      return 1
-    fi
+    verbose-perform-action "$target"
+    rc=$?
     color-end
+    if [[ $rc -ne 0 ]]; then
+      return $rc
+    fi
 
     light_green 'success' | log-info-if-tty
     light_gray '!\n' | log-info-if-tty
