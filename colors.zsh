@@ -56,7 +56,8 @@ function ensure-trailing-newline {
 
 declare -rxg format_cat_control='FORMAT_CAT_CONTROL'
 function format-cat {
-  case "${${(P)format_cat_control}:-}" in
+  local -r ctrl_val=${${(P)format_cat_control}:-}
+  case "$ctrl_val" in
     ENSURE-TRAILING-NEWLINE)
       ensure-trailing-newline
       ;;
@@ -64,7 +65,8 @@ function format-cat {
       cat
       ;;
     *)
-      yellow "unrecognized value for ${(P)format_cat_control}: ${(q-)format_cat_control}" >&2
+      unset "${(P)format_cat_control}"
+      yellow "unrecognized value for ${(P)format_cat_control}: ${(q-)ctrl_val}" >&2
       light_gray 'falling back to cat...' >&2
       cat
       ;;
