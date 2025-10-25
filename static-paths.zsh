@@ -2,9 +2,13 @@
 
 # Link $PYTHONPATH and $pythonpath together as scalar and array variables with entries separated by
 # a colon.
-declare -x -T PYTHONPATH="${PYTHONPATH:-}" pythonpath ':'
+if [[ -n "${PYTHONPATH:-}" ]]; then
+  declare -x -T PYTHONPATH="${PYTHONPATH:-}" pythonpath ':'
+else
+  declare -x -T PYTHONPATH pythonpath ':'
+fi
 # Make my python visible!!!
-pythonpath+="${ZSH_DIR}/snippets/python/"
+pythonpath+="${ZSH_DIR}/snippets/python"
 
 declare maybe_dir
 for maybe_dir in /usr/bin/{core_perl,vendor_perl} "$HOME/.cabal/bin" "$ZSH_DIR/snippets/bash"; do
