@@ -35,6 +35,10 @@ function make-editor-selection-global {
     export EDITOR="$editor"
     export GIT_EDITOR="$editor"
     export VISUAL="$editor"
+    # FIXME: do a better state abstraction!!
+    if [[ "$editor" = 'emacsclient' ]]; then
+      export SPACK_EDITOR='emacsclient -n'
+    fi
   else
     die "Editor ${editor} was not recognized."
   fi
